@@ -24,7 +24,7 @@ def public_service_queryset():
         provider__provider_profile__verification_status='verified',
         provider_service__is_active=True,
         provider_service__approval_status__in=['approved', 'active'],
-        provider_service__catalog_service__is_active=True,
+        provider_service__managed_service__is_active=True,
     )
 
 
@@ -38,18 +38,18 @@ def home_view(request):
     }
     
     # أحدث الخدمات (آخر 6)
-    latest_services = public_service_queryset().select_related('provider', 'category', 'provider_service__catalog_service').order_by('-created_at')[:6]
+    latest_services = public_service_queryset().select_related('provider', 'provider_service__managed_service').order_by('-created_at')[:6]
     
     # الخدمات الأعلى تقييماً (6 خدمات)
     top_rated_services = public_service_queryset().filter(
         average_rating__gte=4.0
-    ).select_related('provider', 'category', 'provider_service__catalog_service').order_by('-average_rating', '-created_at')[:6]
+    ).select_related('provider', 'provider_service__managed_service').order_by('-average_rating', '-created_at')[:6]
     
     # التصنيفات الرئيسية (أول 6)
     categories = Category.objects.filter(
         is_active=True,
         parent__isnull=True
-    ).prefetch_related('services')[:6]
+    ).prefetch_related('managed_services')[:6]
     
     context = {
         'stats': stats,
@@ -73,7 +73,7 @@ class ServiceListView(ListView):
     
     def get_queryset(self):
         queryset = public_service_queryset().select_related(
-            'provider', 'provider__provider_profile', 'category', 'provider_service__catalog_service'
+            'provider', 'provider__provider_profile', 'provider_service__managed_service'
         ).annotate(completed_orders_real=Count('orders', filter=Q(orders__status=Order.STATUS_COMPLETED), distinct=True))
         
         # 1. البحث النصي
@@ -88,7 +88,7 @@ class ServiceListView(ListView):
         # 2. الفلترة حسب التصنيف
         category_id = self.request.GET.get('category')
         if category_id:
-            queryset = queryset.filter(category_id=category_id)
+            queryset = queryset.filter(provider_service__managed_service__category_id=category_id)
         
         # 3. الفلترة حسب السعر (من وإلى)
         min_price = self.request.GET.get('min_price')
@@ -133,7 +133,7 @@ class ServiceDetailView(DetailView):
     context_object_name = 'service'
 
     def get_queryset(self):
-        return public_service_queryset().select_related('provider', 'provider__provider_profile', 'category', 'provider_service__catalog_service')
+        return public_service_queryset().select_related('provider', 'provider__provider_profile', 'provider_service__managed_service')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -146,15 +146,15 @@ class ServiceDetailView(DetailView):
         context['service_rating_count'] = public_reviews.count()
         context['service_average_rating'] = public_reviews.aggregate(avg=Avg('service_rating'))['avg'] or service.average_rating
         context['provider_completed_orders'] = service.provider.orders_as_provider.filter(status=Order.STATUS_COMPLETED).count()
-        context['provider_services'] = public_service_queryset().filter(provider=service.provider).exclude(pk=service.pk).select_related('category', 'provider_service__catalog_service')[:6]
+        context['provider_services'] = public_service_queryset().filter(provider=service.provider).exclude(pk=service.pk).select_related('provider_service__managed_service')[:6]
         
         # خدمات مشابهة من نفس التصنيف
         if service.category:
             context['related_services'] = Service.objects.filter(
-                category=service.category,
+                provider_service__managed_service__category=service.category,
                 provider_service__is_active=True,
                 provider_service__approval_status__in=['approved', 'active'],
-                provider_service__catalog_service__is_active=True,
+                provider_service__managed_service__is_active=True,
                 status='active',
                 provider__provider_profile__status='active', provider__provider_profile__verification_status='verified'
             ).exclude(id=service.id).select_related('provider', 'provider__provider_profile').annotate(completed_orders_real=Count('orders', filter=Q(orders__status=Order.STATUS_COMPLETED), distinct=True))[:4]
@@ -259,7 +259,7 @@ def my_services_view(request):
         messages.error(request, 'هذه الصفحة متاحة لمقدمي الخدمات فقط.')
         return redirect('home')
     
-    services = Service.objects.filter(provider=request.user).select_related('category', 'provider_service__catalog_service').annotate(real_orders=Count('orders', distinct=True))
+    services = Service.objects.filter(provider=request.user).select_related('provider_service__managed_service').annotate(real_orders=Count('orders', distinct=True))
     
     # إحصائيات
     active_count = services.filter(status='active').count()
@@ -310,7 +310,7 @@ class CategoryDetailView(DetailView):
         
         # الخدمات في هذا التصنيف
         services = Service.objects.filter(
-            category=category,
+            provider_service__managed_service__category=category,
             status='active',
             provider__provider_profile__status='active', provider__provider_profile__verification_status='verified'
         ).select_related('provider', 'provider__provider_profile')

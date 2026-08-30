@@ -14,7 +14,7 @@
         <dt class="col-md-4">الخبرة</dt><dd class="col-md-8">{{ verification.provider.experience_years }} سنة — {{ verification.provider.experience|default:'—' }}</dd>
         <dt class="col-md-4">المؤهلات</dt><dd class="col-md-8">{% for q in verification.provider.qualification_choices.all %}{{ q.name }}{% if not forloop.last %}، {% endif %}{% empty %}—{% endfor %}</dd>
         <dt class="col-md-4">التخصصات</dt><dd class="col-md-8">{% for s in verification.provider.specializations.all %}{{ s.name }}{% if not forloop.last %}، {% endif %}{% empty %}—{% endfor %}</dd>
-        <dt class="col-md-4">الموقع</dt><dd class="col-md-8">{% if verification.provider.location_city %}{{ verification.provider.location_city.name }}{% elif verification.provider.city %}{{ verification.provider.city }}{% else %}—{% endif %} - {% if verification.provider.location_district %}{{ verification.provider.location_district.name }}{% elif verification.provider.district %}{{ verification.provider.district }}{% else %}—{% endif %}</dd>
+        <dt class="col-md-4">الموقع</dt><dd class="col-md-8">{% if verification.provider.location_city %}{{ verification.provider.location_city.name }}{% else %}—{% endif %} - {% if verification.provider.location_district %}{{ verification.provider.location_district.name }}{% else %}—{% endif %}</dd>
       </dl>
       <div id="providerMap" class="map mt-3" style="height:300px" data-lat="{{ verification.provider.latitude|default_if_none:'' }}" data-lng="{{ verification.provider.longitude|default_if_none:'' }}"></div>
     </div>

@@ -15,7 +15,7 @@ def is_provider_verified(user):
     profile = getattr(user, 'provider_profile', None)
     return bool(profile and profile.status == 'active' and profile.verification_status == 'verified')
 
-def get_provider_onboarding_status(profile):
+def get_provider_onboarding_status(profile, requested_service_ids=None):
     """Return the real onboarding checklist and whether submission is complete."""
     from apps.core.models import TermsAcceptance, TermsAndConditions
     from apps.marketplace.models import ProviderService
@@ -48,9 +48,16 @@ def get_provider_onboarding_status(profile):
     ).values_list('document_type__code', flat=True))
     documents_ok = required_codes.issubset(uploaded_codes) if required_codes else profile.documents.filter(status__in=['pending', 'approved']).exists()
 
-    services_ok = ProviderService.objects.filter(
-        provider=profile, catalog_service__isnull=False, catalog_service__is_active=True
-    ).exists()
+    # Before approval, the provider has *requested* central services but does
+    # not have approved ProviderService rows yet.  Treat that draft selection
+    # as the onboarding requirement; ProviderService is created only by admin
+    # approval and must never be required to submit the request.
+    if requested_service_ids is None:
+        services_ok = ProviderService.objects.filter(
+            provider=profile, managed_service__is_active=True
+        ).exists()
+    else:
+        services_ok = bool(requested_service_ids)
 
     active_terms = TermsAndConditions.objects.filter(is_active=True).order_by('-published_at', '-created_at').first()
     terms_ok = bool(active_terms and TermsAcceptance.objects.filter(

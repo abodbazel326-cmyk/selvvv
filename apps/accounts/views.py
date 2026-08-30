@@ -138,12 +138,6 @@ def _save_provider_forms(request, profile, include_wallets=False):
             user = user_form.save()
             provider = provider_form.save(commit=False)
             provider.user = request.user
-            # Account and professional contact details are intentionally independent.
-            # Keep legacy location text fields synchronized with the canonical location FKs.
-            if provider.location_city_id:
-                provider.city = provider.location_city.name
-            if provider.location_district_id:
-                provider.district = provider.location_district.name
             provider.save()
             provider_form.save_m2m()
             if include_wallets:
@@ -176,11 +170,11 @@ def provider_profile_edit_view(request):
         provider_form = ProviderProfileForm(instance=profile, prefix='provider')
 
     approved_provider_services = profile.provider_services.filter(
-        catalog_service__isnull=False,
-        catalog_service__is_active=True,
+        managed_service__isnull=False,
+        managed_service__is_active=True,
         approval_status__in=['approved', 'active'],
         is_active=True,
-    ).select_related('catalog_service', 'catalog_service__category').order_by('catalog_service__name')
+    ).select_related('managed_service', 'managed_service__category').order_by('managed_service__name')
     return render(request, 'accounts/provider_profile_edit.html', {
         'user_form': user_form,
         'provider_form': provider_form,
@@ -198,6 +192,7 @@ def provider_onboarding_view(request):
         return redirect('accounts:profile')
 
     profile = services.get_provider_profile(request.user)
+    requested_services_key = 'provider_onboarding_requested_services'
     if profile.verification_status == 'verified':
         messages.info(request, 'تم اعتماد حسابك. يمكنك تعديل ملفك الشخصي من الصفحة المخصصة لذلك.')
         return redirect('accounts:provider_profile_edit')
@@ -225,20 +220,23 @@ def provider_onboarding_view(request):
             current_step = 1
         request.session['provider_onboarding_step'] = current_step
         if action == 'accept_commission':
-            # Save the provider/profile fields first so accepting the policy never
-            # causes previously entered onboarding data to disappear.
-            saved, user_form, provider_form, save_error = _save_provider_forms(request, profile, include_wallets=False)
             terms = active_terms()
             if not terms:
                 messages.error(request, 'لا توجد سياسة عمولة فعالة. يرجى انتظار الإدارة لإعدادها.')
-            elif not saved:
-                messages.error(request, 'تعذر حفظ البيانات الحالية قبل قبول سياسة العمولة. راجع الأخطاء الظاهرة في النموذج.')
             else:
-                ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[0] or None
-                acceptance, created = TermsAcceptance.objects.get_or_create(
-                    user=request.user, terms=terms,
-                    defaults={'commission_rate': terms.commission_rate, 'ip_address': ip}
-                )
+                # Consent is its own state transition.  It must not depend on
+                # validation of unrelated, incomplete profile steps.
+                try:
+                    with transaction.atomic():
+                        _sync_provider_wallets(request, profile)
+                        ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[0] or None
+                        acceptance, created = TermsAcceptance.objects.get_or_create(
+                            user=request.user, terms=terms,
+                            defaults={'commission_rate': terms.commission_rate, 'ip_address': ip}
+                        )
+                except ValidationError as exc:
+                    messages.error(request, exc.messages[0] if hasattr(exc, 'messages') else str(exc))
+                    return redirect(f'{request.path}?step=5')
                 if created:
                     from apps.core.services import notify
                     notify(request.user, 'commission_accepted', 'تم قبول سياسة العمولة', f'تم قبول عمولة المنصة بنسبة {terms.commission_rate}%.')
@@ -287,6 +285,12 @@ def provider_onboarding_view(request):
         else:
             saved, user_form, provider_form, save_error = _save_provider_forms(request, profile, include_wallets=True)
             if saved:
+                draft_form = ProviderVerificationRequestForm(request.POST, provider=profile)
+                if draft_form.is_valid() and 'requested_services' in request.POST:
+                    request.session[requested_services_key] = list(
+                        draft_form.cleaned_data['requested_services'].values_list('pk', flat=True)
+                    )
+                    request.session.modified = True
                 profile.refresh_from_db()
                 messages.success(request, 'تم حفظ التغييرات ومتابعة الخطوة الحالية.')
                 request.session['provider_onboarding_step'] = current_step
@@ -304,7 +308,8 @@ def provider_onboarding_view(request):
 
 
 def _provider_onboarding_context(request, profile, user_form, provider_form, document_form, verification_form=None):
-    checklist, can_submit = get_provider_onboarding_status(profile)
+    requested_service_ids = request.session.get('provider_onboarding_requested_services', [])
+    checklist, can_submit = get_provider_onboarding_status(profile, requested_service_ids)
     terms = active_terms()
     accepted_terms = TermsAcceptance.objects.filter(user=request.user, terms=terms).first() if terms else None
     active_wallets = Wallet.objects.filter(is_active=True).order_by('display_order', 'name')
@@ -323,7 +328,7 @@ def _provider_onboarding_context(request, profile, user_form, provider_form, doc
         'maps_api_key': settings.MAPS_API_KEY,
         'verification_form': verification_form or ProviderVerificationRequestForm(
             provider=profile,
-            initial={'requested_services': _initial_requested_services(profile)},
+            initial={'requested_services': requested_service_ids or _initial_requested_services(profile)},
         ),
         'document_form': document_form,
         'documents': ProviderDocument.objects.filter(provider=profile).select_related('document_type').order_by('-created_at'),
@@ -350,7 +355,7 @@ class ProviderDetailView(DetailView):
         provider = self.get_object()
         
         profile = services.get_provider_profile(provider)
-        active_services = provider.services.filter(status='active').select_related('category').annotate(completed_orders_real=Count('orders', filter=Q(orders__status='completed'), distinct=True))
+        active_services = provider.services.filter(status='active').select_related('provider_service__managed_service__category').annotate(completed_orders_real=Count('orders', filter=Q(orders__status='completed'), distinct=True))
         public_reviews = provider.reviews_received.filter(is_public=True).select_related('customer', 'service').order_by('-created_at')
         rating_stats = public_reviews.aggregate(avg=Avg('provider_rating'), count=Count('id'))
         completed_orders = provider.orders_as_provider.filter(status='completed').count()
@@ -430,7 +435,7 @@ def _initial_requested_services(profile):
     latest_request = profile.verification_requests.order_by('-created_at').first()
     if latest_request and latest_request.requested_services.exists():
         return latest_request.requested_services.all()
-    return [ps.catalog_service for ps in profile.provider_services.filter(catalog_service__isnull=False).select_related('catalog_service') if ps.catalog_service_id]
+    return [ps.managed_service for ps in profile.provider_services.filter(managed_service__isnull=False).select_related('managed_service') if ps.managed_service_id]
 
 @login_required
 def provider_documents_view(request):
@@ -484,7 +489,10 @@ def _validate_and_submit_verification(request, profile):
     if not verification_form.is_valid():
         return False, 'تعذر إرسال الطلب. راجع اختيار الخدمات إن وُجدت.', verification_form
 
-    checklist, _complete = get_provider_onboarding_status(profile)
+    requested_services = verification_form.cleaned_data.get('requested_services')
+    checklist, _complete = get_provider_onboarding_status(
+        profile, list(requested_services.values_list('pk', flat=True))
+    )
     missing = {
         'profile': 'البيانات الأساسية والمهنية',
         'services': 'الخدمات المركزية',
@@ -496,11 +504,12 @@ def _validate_and_submit_verification(request, profile):
     }
     labels = [label for key, label in missing.items() if not checklist.get(key)]
 
-    _create_or_update_verification_request(
-        request, profile, verification_form.cleaned_data.get('requested_services') or []
-    )
     if labels:
-        return True, 'تم إرسال الملف للمراجعة. البيانات غير المكتملة حاليًا: ' + '، '.join(labels) + '. يمكنك استكمالها لاحقًا.', verification_form
+        return False, 'لا يمكن إرسال الطلب قبل استكمال: ' + '، '.join(labels) + '.', verification_form
+    _create_or_update_verification_request(
+        request, profile, requested_services
+    )
+    request.session.pop('provider_onboarding_requested_services', None)
     return True, 'تم إرسال ملفك للمراجعة، وأصبح الطلب ظاهرًا لدى الإدارة.', verification_form
 
 

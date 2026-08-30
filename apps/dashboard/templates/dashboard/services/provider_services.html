@@ -26,14 +26,14 @@
             {% else %}—{% endif %}
           </td>
           <td>
-            {% if ps.catalog_service %}
-              <strong>{{ ps.catalog_service.name }}</strong>
-              {% if ps.catalog_service.category %}<small class="d-block text-muted">التصنيف: {{ ps.catalog_service.category.name }}</small>{% endif %}
+            {% if ps.managed_service %}
+              <strong>{{ ps.managed_service.name }}</strong>
+              {% if ps.managed_service.category %}<small class="d-block text-muted">التصنيف: {{ ps.managed_service.category.name }}</small>{% endif %}
             {% else %}—{% endif %}
           </td>
-          <td>{% if ps.service %}<strong>{{ ps.service.title }}</strong>{% else %}<span class="text-muted">اعتماد خدمة مركزية</span>{% endif %}</td>
-          <td>{% if ps.service %}{{ ps.service.get_price_display }}{% elif ps.catalog_service %}<span class="text-muted">يحدد عند إنشاء العرض التجاري</span>{% else %}—{% endif %}</td>
-          <td>{% if ps.service %}{{ ps.service.get_price_type_display }}{% else %}—{% endif %}</td>
+          <td><strong>{{ ps.managed_service.name }}</strong></td>
+          <td><span class="text-muted">يحدده العرض التجاري</span></td>
+          <td>—</td>
           <td><span class="badge text-bg-info">{{ ps.get_approval_status_display }}</span></td>
           <td>{% if ps.is_active %}<span class="badge text-bg-success">نشطة</span>{% else %}<span class="badge text-bg-secondary">غير نشطة</span>{% endif %}</td>
           <td>{{ ps.commercial_services_count }}</td>

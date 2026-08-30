@@ -14,7 +14,7 @@ class SpecializationAdmin(CatalogChoiceAdmin): pass
 class QualificationAdmin(CatalogChoiceAdmin): pass
 @admin.register(ManagedService)
 class ManagedServiceAdmin(CatalogChoiceAdmin):
-    list_display=['name','category','is_active','order','updated_at']; list_filter=['is_active','category']; search_fields=['name','description','category__name']
+    list_display=['name','category','is_active','order','updated_at']; list_filter=['is_active','category']; search_fields=['name','description','provider_service__managed_service__category__name']
     fieldsets=(('الخدمة',{'fields':('name','description','category')}),('النشر',{'fields':('is_active','order')}))
 
 
@@ -51,18 +51,18 @@ class ServiceAdmin(admin.ModelAdmin):
     Service admin
     """
     list_display = [
-        'title', 'provider', 'provider_service', 'category', 'price_type',
+        'title', 'provider', 'provider_service', 'price_type',
         'price', 'get_status_badge', 'views_count', 'orders_count',
         'average_rating', 'is_featured', 'created_at'
     ]
-    list_filter = ['status', 'price_type', 'is_featured', 'category', 'created_at']
+    list_filter = ['status', 'price_type', 'is_featured', 'created_at']
     search_fields = ['title', 'description', 'provider__username']
     readonly_fields = ['views_count', 'orders_count', 'average_rating', 'created_at', 'updated_at']
     ordering = ['-created_at']
     
     fieldsets = (
         ('المعلومات الأساسية', {
-            'fields': ('provider', 'provider_service', 'category', 'title', 'description', 'image')
+            'fields': ('provider', 'provider_service', 'title', 'description', 'image')
         }),
         ('التسعير والتسليم', {
             'fields': ('price_type', 'price', 'delivery_time')
@@ -113,7 +113,7 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(ProviderService)
 class ProviderServiceAdmin(admin.ModelAdmin):
-    list_display=['provider','catalog_service','service','approval_status','price','price_type','estimated_duration','is_active','created_at']
-    list_filter=['approval_status','is_active','price_type','catalog_service','service__category','created_at']
-    search_fields=['provider__user__username','service__title','catalog_service__name','description']
-    raw_id_fields=['provider','service']
+    list_display=['provider','managed_service','approval_status','is_active','created_at']
+    list_filter=['approval_status','is_active','managed_service__category','created_at']
+    search_fields=['provider__user__username','managed_service__name']
+    raw_id_fields=['provider']

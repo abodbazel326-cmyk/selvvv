@@ -27,7 +27,6 @@ class User(AbstractUser):
     
     # معلومات إضافية
     phone = models.CharField('رقم الجوال', max_length=20, blank=True)
-    city = models.CharField('المدينة', max_length=100, blank=True)
     location_city = models.ForeignKey('core.City', on_delete=models.SET_NULL, null=True, blank=True, related_name='users', verbose_name='المدينة المختارة')
     location_district = models.ForeignKey('core.District', on_delete=models.SET_NULL, null=True, blank=True, related_name='users', verbose_name='المديرية المختارة')
     
@@ -73,24 +72,18 @@ class ProviderProfile(models.Model):
     
     # معلومات شخصية
     display_name = models.CharField('اسم العرض', max_length=150, blank=True)
-    phone = models.CharField('هاتف العمل', max_length=20, blank=True)
-    email = models.EmailField('بريد العمل', blank=True)
-    qualifications = models.TextField('المؤهلات', blank=True)
+    qualification_notes = models.TextField('ملاحظات إضافية عن المؤهلات', blank=True)
     experience = models.TextField('الخبرات', blank=True)
     bio = models.TextField('نبذة تعريفية', max_length=500, blank=True)
     profile_image = models.ImageField('صورة الملف الشخصي', upload_to='profiles/', blank=True, null=True)
     
     # معلومات العمل
-    specialization = models.CharField('التخصص', max_length=100, blank=True, 
-                                     help_text='مثال: تصميم جرافيك، برمجة ويب، تسويق')
     experience_years = models.PositiveIntegerField('سنوات الخبرة', default=0, db_index=True)
     hourly_rate = models.DecimalField('السعر بالساعة', max_digits=10, decimal_places=2, 
                                       null=True, blank=True, help_text='بالريال اليمني')
     
     # موقع جغرافي
     address = models.TextField('العنوان', blank=True)
-    city = models.CharField('المدينة', max_length=100, blank=True, db_index=True)
-    district = models.CharField('المنطقة', max_length=100, blank=True, db_index=True)
     location_city = models.ForeignKey('core.City', on_delete=models.SET_NULL, null=True, blank=True, related_name='provider_profiles', verbose_name='المدينة المختارة')
     location_district = models.ForeignKey('core.District', on_delete=models.SET_NULL, null=True, blank=True, related_name='provider_profiles', verbose_name='المديرية المختارة')
     specializations = models.ManyToManyField('marketplace.Specialization', blank=True, related_name='providers', verbose_name='التخصصات')
@@ -129,7 +122,7 @@ class ProviderProfile(models.Model):
         verbose_name = 'ملف مقدم خدمة'
         verbose_name_plural = 'ملفات مقدمي الخدمات'
         ordering = ['-average_rating', '-completed_orders']
-        indexes = [models.Index(fields=['verification_status','city']), models.Index(fields=['status','is_available'])]
+        indexes = [models.Index(fields=['verification_status','location_city']), models.Index(fields=['status','is_available'])]
     
     def __str__(self):
         return f"ملف {self.user.username}"
@@ -182,6 +175,7 @@ class ProviderDocument(models.Model):
         verbose_name='مستند مقدم خدمة'; verbose_name_plural='مستندات مقدمي الخدمات'
         permissions=[('review_provider_document','Can review provider document'),('verify_provider','Can verify provider')]
         indexes=[models.Index(fields=['provider','status']), models.Index(fields=['document_type','status'])]
+        constraints=[models.UniqueConstraint(fields=['provider', 'document_type'], name='unique_provider_document_type')]
     def can_be_viewed_by(self, user):
         return user.is_authenticated and (user == self.provider.user or user.is_staff or user.has_perm('accounts.review_provider_document') or user.is_superuser)
     def __str__(self): return f'{self.provider} - {self.document_type}'
@@ -215,16 +209,14 @@ class ProviderVerificationRequest(models.Model):
             },
             'provider': {
                 'display_name': self.provider.display_name,
-                'phone': self.provider.phone,
-                'email': self.provider.email,
                 'bio': self.provider.bio,
                 'experience_years': self.provider.experience_years,
                 'experience': self.provider.experience,
                 'hourly_rate': str(self.provider.hourly_rate or ''),
                 'availability': self.provider.availability,
                 'address': self.provider.address,
-                'city': self.provider.location_city.name if self.provider.location_city_id else self.provider.city,
-                'district': self.provider.location_district.name if self.provider.location_district_id else self.provider.district,
+                'city': self.provider.location_city.name if self.provider.location_city_id else '',
+                'district': self.provider.location_district.name if self.provider.location_district_id else '',
                 'latitude': str(self.provider.latitude or ''),
                 'longitude': str(self.provider.longitude or ''),
                 'specializations': list(self.provider.specializations.filter(is_active=True).values_list('name', flat=True)),

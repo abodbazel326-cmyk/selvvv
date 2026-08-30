@@ -212,13 +212,12 @@ class ProviderProfileForm(LocationFieldsMixin, forms.ModelForm):
     نموذج تعديل ملف مقدم الخدمة
     Provider profile edit form
     """
-    phone = forms.CharField(label='هاتف العمل', required=False, validators=[phone_validator], widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '77XXXXXXX', 'type': 'tel', 'inputmode': 'numeric'}))
     latitude = forms.DecimalField(label='خط العرض', required=False, max_digits=9, decimal_places=6, min_value=-90, max_value=90, widget=forms.HiddenInput())
     longitude = forms.DecimalField(label='خط الطول', required=False, max_digits=9, decimal_places=6, min_value=-180, max_value=180, widget=forms.HiddenInput())
 
     class Meta:
         model = ProviderProfile
-        fields = ['display_name','bio','phone','email','profile_image','specializations','experience_years','qualification_choices','experience','hourly_rate','address','location_city','location_district','city','district','latitude','longitude','service_radius','availability','is_available']
+        fields = ['display_name','bio','profile_image','specializations','experience_years','qualification_choices','qualification_notes','experience','hourly_rate','address','location_city','location_district','latitude','longitude','service_radius','availability','is_available']
         widgets = {
             'bio': forms.Textarea(attrs={
                 'class': 'form-control',
@@ -226,8 +225,6 @@ class ProviderProfileForm(LocationFieldsMixin, forms.ModelForm):
                 'placeholder': 'اكتب نبذة تعريفية عنك وعن خبراتك...'
             }),
             'display_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'الاسم الظاهر للعملاء'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'هاتف العمل'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'business@example.com'}),
             'profile_image': forms.FileInput(attrs={'class': 'form-control'}),
             'specializations': forms.SelectMultiple(attrs={'class': 'form-select choices-dropdown', 'size': 1, 'title': 'يمكن اختيار أكثر من تخصص'}),
             'experience_years': forms.NumberInput(attrs={
@@ -247,7 +244,6 @@ class ProviderProfileForm(LocationFieldsMixin, forms.ModelForm):
             }),
             'location_city': forms.Select(attrs={'class': 'form-select'}),
             'location_district': forms.Select(attrs={'class': 'form-select'}),
-            'city': forms.HiddenInput(), 'district': forms.HiddenInput(),
             'latitude': forms.HiddenInput(),
             'longitude': forms.HiddenInput(),
             'service_radius': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
@@ -258,14 +254,13 @@ class ProviderProfileForm(LocationFieldsMixin, forms.ModelForm):
         }
         labels = {
             'display_name': 'اسم العرض',
-            'phone': 'هاتف العمل',
-            'email': 'بريد العمل',
             'bio': 'نبذة تعريفية',
             'profile_image': 'صورة الملف الشخصي',
             'specializations': 'التخصصات',
             'experience_years': 'سنوات الخبرة',
             'hourly_rate': 'السعر بالساعة (ريال يمني)',
             'qualification_choices': 'المؤهلات',
+            'qualification_notes': 'تفاصيل إضافية عن المؤهلات',
             'experience': 'الخبرات',
             'address': 'العنوان',
             'location_city': 'مدينة العمل', 'location_district': 'المديرية',
@@ -335,6 +330,8 @@ class ProviderVerificationRequestForm(forms.ModelForm):
     def __init__(self, *args, provider=None, **kwargs):
         self.provider = provider
         super().__init__(*args, **kwargs)
+        # Requested services are a request, not an entitlement.  The admin
+        # independently approves each selected service after verification.
         self.fields['requested_services'].queryset = ManagedService.objects.filter(is_active=True)
         self.fields['requested_services'].required = False
 

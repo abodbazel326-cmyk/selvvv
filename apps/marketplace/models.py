@@ -34,11 +34,11 @@ class Qualification(CatalogChoice):
 
 
 class ManagedService(CatalogChoice):
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='managed_services', verbose_name='التصنيف')
+    category = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='managed_services', verbose_name='التصنيف')
     description = models.TextField('الوصف', blank=True)
     class Meta(CatalogChoice.Meta):
         verbose_name = 'خدمة أساسية'; verbose_name_plural = 'الخدمات الأساسية'
-        indexes = [models.Index(fields=['category', 'is_active', 'order'])]
+        indexes = [models.Index(fields=['is_active', 'order'])]
 
 
 class Category(models.Model):
@@ -114,7 +114,7 @@ class Category(models.Model):
     
     def get_services_count(self):
         """عدد الخدمات في هذا التصنيف"""
-        return self.services.filter(status='active').count()
+        return Service.objects.filter(status='active', provider_service__managed_service__category=self).count()
     
     def get_all_services_count(self):
         """عدد الخدمات شاملاً التصنيفات الفرعية"""
@@ -158,18 +158,9 @@ class Service(models.Model):
         verbose_name='مقدم الخدمة'
     )
     
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='services',
-        verbose_name='التصنيف'
-    )
     provider_service = models.ForeignKey(
         'ProviderService',
         on_delete=models.PROTECT,
-        null=True,
-        blank=True,
         related_name='commercial_services',
         verbose_name='اعتماد مقدم الخدمة',
         help_text='الخدمة المركزية المعتمدة التي ينتمي إليها هذا العرض التجاري',
@@ -273,18 +264,26 @@ class Service(models.Model):
         verbose_name = 'خدمة'
         verbose_name_plural = 'الخدمات'
         ordering = ['-created_at']
-        constraints = [models.CheckConstraint(check=models.Q(price__gte=0) | models.Q(price__isnull=True), name='service_price_non_negative')]
+        constraints = [
+            models.CheckConstraint(check=models.Q(price__gte=0) | models.Q(price__isnull=True), name='service_price_non_negative'),
+            models.UniqueConstraint(fields=['provider', 'provider_service', 'title'], name='unique_provider_provider_service_title'),
+        ]
         indexes = [
             models.Index(fields=['status', '-created_at']),
-            models.Index(fields=['category', 'status']),
             models.Index(fields=['provider', 'status']),
         ]
     
     def __str__(self):
         return self.title
     
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    @property
+    def category(self):
+        """Administrative category is derived, never independently persisted."""
+        return self.provider_service.managed_service.category
+
+    @property
+    def managed_service(self):
+        return self.provider_service.managed_service
     
     def get_absolute_url(self):
         """رابط صفحة الخدمة"""
@@ -324,12 +323,10 @@ class Service(models.Model):
         approval = self.provider_service
         if approval.provider.user_id != self.provider_id:
             raise ValidationError({'provider_service': 'اعتماد الخدمة لا يخص مقدم الخدمة المحدد.'})
-        if approval.catalog_service_id is None:
-            raise ValidationError({'provider_service': 'لا يمكن ربط العرض باعتماد خدمة تجارية قديم.'})
+        if approval.managed_service_id is None:
+            raise ValidationError({'provider_service': 'يجب ربط العرض باعتماد خدمة مركزية.'})
         if not approval.is_active or approval.approval_status not in {'approved', 'active'}:
             raise ValidationError({'provider_service': 'اعتماد الخدمة غير نشط أو غير معتمد.'})
-        if approval.catalog_service.category_id and self.category_id != approval.catalog_service.category_id:
-            raise ValidationError({'provider_service': 'تصنيف العرض لا يطابق الخدمة المركزية المعتمدة.'})
     
     def is_owned_by(self, user):
         """تحقق إذا كان المستخدم هو المالك"""
@@ -338,12 +335,7 @@ class Service(models.Model):
 class ProviderService(models.Model):
     PRICE_TYPE_CHOICES = Service.PRICE_TYPE_CHOICES
     provider = models.ForeignKey('accounts.ProviderProfile', on_delete=models.CASCADE, related_name='provider_services')
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='provider_services', null=True, blank=True)
-    catalog_service = models.ForeignKey(ManagedService, on_delete=models.PROTECT, related_name='provider_services', null=True, blank=True, verbose_name='الخدمة الأساسية')
-    description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
-    price_type = models.CharField(max_length=20, choices=PRICE_TYPE_CHOICES, default='fixed')
-    estimated_duration = models.PositiveIntegerField(default=1, help_text='Days')
+    managed_service = models.ForeignKey(ManagedService, on_delete=models.PROTECT, related_name='provider_services', verbose_name='الخدمة المركزية')
     is_active = models.BooleanField(default=True, db_index=True)
     STATUS_CHOICES = [('pending', 'قيد المراجعة'), ('approved', 'مقبولة'), ('rejected', 'مرفوضة'), ('active', 'نشطة'), ('suspended', 'موقوفة')]
     approval_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True)
@@ -352,23 +344,14 @@ class ProviderService(models.Model):
     class Meta:
         verbose_name='خدمة مقدم الخدمة'; verbose_name_plural='خدمات مقدمي الخدمات'
         constraints = [
-            models.UniqueConstraint(fields=['provider', 'service'], condition=models.Q(service__isnull=False), name='unique_provider_listing_service'),
-            models.UniqueConstraint(fields=['provider', 'catalog_service'], condition=models.Q(catalog_service__isnull=False), name='unique_provider_catalog_service'),
-            models.CheckConstraint(
-                check=(models.Q(service__isnull=False, catalog_service__isnull=True) |
-                       models.Q(service__isnull=True, catalog_service__isnull=False)),
-                name='provider_service_exactly_one_source',
-            ),
+            models.UniqueConstraint(fields=['provider', 'managed_service'], name='unique_provider_managed_service'),
         ]
-        indexes=[models.Index(fields=['service','is_active']), models.Index(fields=['provider','is_active'])]
+        indexes=[models.Index(fields=['managed_service','is_active']), models.Index(fields=['provider','is_active'])]
     def clean(self):
         from django.core.exceptions import ValidationError
-        if bool(self.service_id) == bool(self.catalog_service_id):
-            raise ValidationError('اختر خدمة سوق أو خدمة أساسية واحدة فقط.')
-        if self.catalog_service_id and not self.catalog_service.is_active:
+        if self.managed_service_id and not self.managed_service.is_active:
             raise ValidationError('الخدمة المختارة غير نشطة أو لم تعد متاحة.')
         if not (self.provider.status == 'active' and self.provider.verification_status == 'verified'):
             raise ValidationError('يجب تفعيل/توثيق حساب مقدم الخدمة قبل إضافة الخدمات.')
     def __str__(self):
-        target = self.catalog_service or self.service
-        return f'{self.provider} - {target}'
+        return f'{self.provider} - {self.managed_service}'
