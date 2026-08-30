@@ -1,0 +1,20 @@
+flowchart TD
+    P[Provider] --> A1((2.1 Edit profile and select services))
+    A1 --> D1[(Provider profile / service selections)]
+    P --> A2((2.2 Upload provider documents))
+    A2 --> D2[(Provider documents)]
+    P --> A3((2.3 Submit verification request))
+    A3 --> D3[(Verification request + profile snapshot)]
+    D1 --> A3
+    D2 --> A3
+    A[Administrator] --> A4((2.4 Review request and documents))
+    A4 <--> D2
+    A4 <--> D3
+    A4 --> A5{Decision}
+    A5 -->|approved| A6((2.5 Activate / verify provider))
+    A5 -->|rejected or needs documents| A7((2.6 Record note and request changes))
+    A6 --> D1
+    A7 --> D3
+    A6 --> N[(Notifications / audit)]
+    A7 --> N
+    N --> P

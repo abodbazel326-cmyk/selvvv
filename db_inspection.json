@@ -1,0 +1,6228 @@
+{
+  "database": "/home/ubuntu/selvvv/db.sqlite3",
+  "sqlite_version": "3.45.1",
+  "foreign_keys_pragma": 0,
+  "tables": [
+    {
+      "name": "accounts_providerdocument",
+      "sql": "CREATE TABLE \"accounts_providerdocument\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"status\" varchar(40) NOT NULL, \"reviewed_at\" datetime NULL, \"review_note\" text NOT NULL, \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"document_type_id\" bigint NOT NULL REFERENCES \"accounts_providerdocumenttype\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"provider_id\" bigint NOT NULL REFERENCES \"accounts_providerprofile\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"reviewed_by_id\" bigint NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"file\" varchar(100) NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "status",
+          "type": "varchar(40)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "reviewed_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "review_note",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "document_type_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "provider_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "reviewed_by_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "file",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "reviewed_by_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_providerprofile",
+          "from": "provider_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "accounts_providerdocumenttype",
+          "from": "document_type_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "accounts_pr_documen_22b599_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 6,
+              "name": "document_type_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 1,
+              "name": "status"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_pr_documen_22b599_idx\" ON \"accounts_providerdocument\" (\"document_type_id\", \"status\")"
+        },
+        {
+          "seq": 1,
+          "name": "accounts_pr_provide_07eea9_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 7,
+              "name": "provider_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 1,
+              "name": "status"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_pr_provide_07eea9_idx\" ON \"accounts_providerdocument\" (\"provider_id\", \"status\")"
+        },
+        {
+          "seq": 2,
+          "name": "accounts_providerdocument_reviewed_by_id_5a57bc4b",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 8,
+              "name": "reviewed_by_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerdocument_reviewed_by_id_5a57bc4b\" ON \"accounts_providerdocument\" (\"reviewed_by_id\")"
+        },
+        {
+          "seq": 3,
+          "name": "accounts_providerdocument_provider_id_25b723f7",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 7,
+              "name": "provider_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerdocument_provider_id_25b723f7\" ON \"accounts_providerdocument\" (\"provider_id\")"
+        },
+        {
+          "seq": 4,
+          "name": "accounts_providerdocument_document_type_id_c3b0dfc2",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 6,
+              "name": "document_type_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerdocument_document_type_id_c3b0dfc2\" ON \"accounts_providerdocument\" (\"document_type_id\")"
+        },
+        {
+          "seq": 5,
+          "name": "accounts_providerdocument_status_4ae99896",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "status"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerdocument_status_4ae99896\" ON \"accounts_providerdocument\" (\"status\")"
+        }
+      ],
+      "row_count": 23
+    },
+    {
+      "name": "accounts_providerdocumenttype",
+      "sql": "CREATE TABLE \"accounts_providerdocumenttype\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"code\" varchar(50) NOT NULL UNIQUE, \"name\" varchar(120) NOT NULL, \"is_required\" bool NOT NULL, \"is_active\" bool NOT NULL, \"created_at\" datetime NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "code",
+          "type": "varchar(50)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "name",
+          "type": "varchar(120)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "is_required",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "sqlite_autoindex_accounts_providerdocumenttype_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "code"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 10
+    },
+    {
+      "name": "accounts_providerprofile",
+      "sql": "CREATE TABLE \"accounts_providerprofile\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"bio\" text NOT NULL, \"profile_image\" varchar(100) NULL, \"specialization\" varchar(100) NOT NULL, \"experience_years\" integer unsigned NOT NULL CHECK (\"experience_years\" >= 0), \"hourly_rate\" decimal NULL, \"address\" text NOT NULL, \"latitude\" decimal NULL, \"longitude\" decimal NULL, \"total_orders\" integer unsigned NOT NULL CHECK (\"total_orders\" >= 0), \"completed_orders\" integer unsigned NOT NULL CHECK (\"completed_orders\" >= 0), \"average_rating\" decimal NOT NULL, \"is_available\" bool NOT NULL, \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"user_id\" bigint NOT NULL UNIQUE REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"admin_notes\" text NOT NULL, \"availability\" varchar(120) NOT NULL, \"city\" varchar(100) NOT NULL, \"display_name\" varchar(150) NOT NULL, \"district\" varchar(100) NOT NULL, \"email\" varchar(254) NOT NULL, \"experience\" text NOT NULL, \"phone\" varchar(20) NOT NULL, \"qualifications\" text NOT NULL, \"service_radius\" integer unsigned NOT NULL CHECK (\"service_radius\" >= 0), \"verification_status\" varchar(30) NOT NULL, \"verified_at\" datetime NULL, \"verified_by_id\" bigint NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"status\" varchar(20) NOT NULL, \"location_city_id\" bigint NULL REFERENCES \"core_city\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"location_district_id\" bigint NULL REFERENCES \"core_district\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "bio",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "profile_image",
+          "type": "varchar(100)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "specialization",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "experience_years",
+          "type": "integer unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "hourly_rate",
+          "type": "decimal",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "address",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "latitude",
+          "type": "decimal",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "longitude",
+          "type": "decimal",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "total_orders",
+          "type": "integer unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "completed_orders",
+          "type": "integer unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "average_rating",
+          "type": "decimal",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "is_available",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "user_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "admin_notes",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "availability",
+          "type": "varchar(120)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "city",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 19,
+          "name": "display_name",
+          "type": "varchar(150)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 20,
+          "name": "district",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 21,
+          "name": "email",
+          "type": "varchar(254)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 22,
+          "name": "experience",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 23,
+          "name": "phone",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 24,
+          "name": "qualifications",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 25,
+          "name": "service_radius",
+          "type": "integer unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 26,
+          "name": "verification_status",
+          "type": "varchar(30)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 27,
+          "name": "verified_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 28,
+          "name": "verified_by_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 29,
+          "name": "status",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 30,
+          "name": "location_city_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 31,
+          "name": "location_district_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "core_district",
+          "from": "location_district_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "core_city",
+          "from": "location_city_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "verified_by_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 3,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "accounts_providerprofile_location_district_id_f2b35503",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 31,
+              "name": "location_district_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_location_district_id_f2b35503\" ON \"accounts_providerprofile\" (\"location_district_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "accounts_providerprofile_location_city_id_f0220fcc",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 30,
+              "name": "location_city_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_location_city_id_f0220fcc\" ON \"accounts_providerprofile\" (\"location_city_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "accounts_pr_status_da77a4_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 29,
+              "name": "status"
+            },
+            {
+              "seqno": 1,
+              "cid": 12,
+              "name": "is_available"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_pr_status_da77a4_idx\" ON \"accounts_providerprofile\" (\"status\", \"is_available\")"
+        },
+        {
+          "seq": 3,
+          "name": "accounts_pr_verific_6808a8_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 26,
+              "name": "verification_status"
+            },
+            {
+              "seqno": 1,
+              "cid": 18,
+              "name": "city"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_pr_verific_6808a8_idx\" ON \"accounts_providerprofile\" (\"verification_status\", \"city\")"
+        },
+        {
+          "seq": 4,
+          "name": "accounts_providerprofile_status_3f18b1b1",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 29,
+              "name": "status"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_status_3f18b1b1\" ON \"accounts_providerprofile\" (\"status\")"
+        },
+        {
+          "seq": 5,
+          "name": "accounts_providerprofile_verified_by_id_0166cb6d",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 28,
+              "name": "verified_by_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_verified_by_id_0166cb6d\" ON \"accounts_providerprofile\" (\"verified_by_id\")"
+        },
+        {
+          "seq": 6,
+          "name": "accounts_providerprofile_verification_status_0b891c09",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 26,
+              "name": "verification_status"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_verification_status_0b891c09\" ON \"accounts_providerprofile\" (\"verification_status\")"
+        },
+        {
+          "seq": 7,
+          "name": "accounts_providerprofile_district_6b9a4039",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 20,
+              "name": "district"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_district_6b9a4039\" ON \"accounts_providerprofile\" (\"district\")"
+        },
+        {
+          "seq": 8,
+          "name": "accounts_providerprofile_city_bf2dcf0c",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 18,
+              "name": "city"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_city_bf2dcf0c\" ON \"accounts_providerprofile\" (\"city\")"
+        },
+        {
+          "seq": 9,
+          "name": "accounts_providerprofile_experience_years_0be62b21",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "experience_years"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_experience_years_0be62b21\" ON \"accounts_providerprofile\" (\"experience_years\")"
+        },
+        {
+          "seq": 10,
+          "name": "sqlite_autoindex_accounts_providerprofile_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 15,
+              "name": "user_id"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 24
+    },
+    {
+      "name": "accounts_providerprofile_qualification_choices",
+      "sql": "CREATE TABLE \"accounts_providerprofile_qualification_choices\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"providerprofile_id\" bigint NOT NULL REFERENCES \"accounts_providerprofile\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"qualification_id\" bigint NOT NULL REFERENCES \"marketplace_qualification\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "providerprofile_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "qualification_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "marketplace_qualification",
+          "from": "qualification_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_providerprofile",
+          "from": "providerprofile_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "accounts_providerprofile_qualification_choices_qualification_id_a98333f6",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "qualification_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_qualification_choices_qualification_id_a98333f6\" ON \"accounts_providerprofile_qualification_choices\" (\"qualification_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "accounts_providerprofile_qualification_choices_providerprofile_id_74aa432d",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "providerprofile_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_qualification_choices_providerprofile_id_74aa432d\" ON \"accounts_providerprofile_qualification_choices\" (\"providerprofile_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "accounts_providerprofile_qualification_choices_providerprofile_id_qualification_id_94b237a3_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "providerprofile_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "qualification_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"accounts_providerprofile_qualification_choices_providerprofile_id_qualification_id_94b237a3_uniq\" ON \"accounts_providerprofile_qualification_choices\" (\"providerprofile_id\", \"qualification_id\")"
+        }
+      ],
+      "row_count": 7
+    },
+    {
+      "name": "accounts_providerprofile_specializations",
+      "sql": "CREATE TABLE \"accounts_providerprofile_specializations\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"providerprofile_id\" bigint NOT NULL REFERENCES \"accounts_providerprofile\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"specialization_id\" bigint NOT NULL REFERENCES \"marketplace_specialization\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "providerprofile_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "specialization_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "marketplace_specialization",
+          "from": "specialization_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_providerprofile",
+          "from": "providerprofile_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "accounts_providerprofile_specializations_specialization_id_68844356",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "specialization_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_specializations_specialization_id_68844356\" ON \"accounts_providerprofile_specializations\" (\"specialization_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "accounts_providerprofile_specializations_providerprofile_id_0c7a6076",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "providerprofile_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerprofile_specializations_providerprofile_id_0c7a6076\" ON \"accounts_providerprofile_specializations\" (\"providerprofile_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "accounts_providerprofile_specializations_providerprofile_id_specialization_id_084dec3a_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "providerprofile_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "specialization_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"accounts_providerprofile_specializations_providerprofile_id_specialization_id_084dec3a_uniq\" ON \"accounts_providerprofile_specializations\" (\"providerprofile_id\", \"specialization_id\")"
+        }
+      ],
+      "row_count": 7
+    },
+    {
+      "name": "accounts_providerverificationrequest",
+      "sql": "CREATE TABLE \"accounts_providerverificationrequest\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"status\" varchar(30) NOT NULL, \"admin_note\" text NOT NULL, \"reviewed_at\" datetime NULL, \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"provider_id\" bigint NOT NULL REFERENCES \"accounts_providerprofile\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"reviewed_by_id\" bigint NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"profile_snapshot\" text NOT NULL CHECK ((JSON_VALID(\"profile_snapshot\") OR \"profile_snapshot\" IS NULL)), \"submitted_at\" datetime NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "status",
+          "type": "varchar(30)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "admin_note",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "reviewed_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "provider_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "reviewed_by_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "profile_snapshot",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "submitted_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "reviewed_by_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_providerprofile",
+          "from": "provider_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "accounts_providerverificationrequest_reviewed_by_id_801c8e35",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 7,
+              "name": "reviewed_by_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerverificationrequest_reviewed_by_id_801c8e35\" ON \"accounts_providerverificationrequest\" (\"reviewed_by_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "accounts_providerverificationrequest_provider_id_61e00670",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 6,
+              "name": "provider_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerverificationrequest_provider_id_61e00670\" ON \"accounts_providerverificationrequest\" (\"provider_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "accounts_providerverificationrequest_status_3dbccfd0",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "status"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerverificationrequest_status_3dbccfd0\" ON \"accounts_providerverificationrequest\" (\"status\")"
+        }
+      ],
+      "row_count": 7
+    },
+    {
+      "name": "accounts_providerverificationrequest_documents",
+      "sql": "CREATE TABLE \"accounts_providerverificationrequest_documents\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"providerverificationrequest_id\" bigint NOT NULL REFERENCES \"accounts_providerverificationrequest\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"providerdocument_id\" bigint NOT NULL REFERENCES \"accounts_providerdocument\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "providerverificationrequest_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "providerdocument_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "accounts_providerdocument",
+          "from": "providerdocument_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_providerverificationrequest",
+          "from": "providerverificationrequest_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "accounts_providerverificationrequest_documents_providerdocument_id_9e687f57",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "providerdocument_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerverificationrequest_documents_providerdocument_id_9e687f57\" ON \"accounts_providerverificationrequest_documents\" (\"providerdocument_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "accounts_providerverificationrequest_documents_providerverificationrequest_id_c28de380",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "providerverificationrequest_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerverificationrequest_documents_providerverificationrequest_id_c28de380\" ON \"accounts_providerverificationrequest_documents\" (\"providerverificationrequest_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "accounts_providerverificationrequest_documents_providerverificationrequest_id_providerdocument_id_2d009460_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "providerverificationrequest_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "providerdocument_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"accounts_providerverificationrequest_documents_providerverificationrequest_id_providerdocument_id_2d009460_uniq\" ON \"accounts_providerverificationrequest_documents\" (\"providerverificationrequest_id\", \"providerdocument_id\")"
+        }
+      ],
+      "row_count": 12
+    },
+    {
+      "name": "accounts_providerverificationrequest_requested_services",
+      "sql": "CREATE TABLE \"accounts_providerverificationrequest_requested_services\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"providerverificationrequest_id\" bigint NOT NULL REFERENCES \"accounts_providerverificationrequest\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"managedservice_id\" bigint NOT NULL REFERENCES \"marketplace_managedservice\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "providerverificationrequest_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "managedservice_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "marketplace_managedservice",
+          "from": "managedservice_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_providerverificationrequest",
+          "from": "providerverificationrequest_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "accounts_providerverificationrequest_requested_services_managedservice_id_ba7d04dc",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "managedservice_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerverificationrequest_requested_services_managedservice_id_ba7d04dc\" ON \"accounts_providerverificationrequest_requested_services\" (\"managedservice_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "accounts_providerverificationrequest_requested_services_providerverificationrequest_id_0a06126d",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "providerverificationrequest_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_providerverificationrequest_requested_services_providerverificationrequest_id_0a06126d\" ON \"accounts_providerverificationrequest_requested_services\" (\"providerverificationrequest_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "accounts_providerverificationrequest_requested_services_providerverificationrequest_id_managedservice_id_52f14c96_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "providerverificationrequest_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "managedservice_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"accounts_providerverificationrequest_requested_services_providerverificationrequest_id_managedservice_id_52f14c96_uniq\" ON \"accounts_providerverificationrequest_requested_services\" (\"providerverificationrequest_id\", \"managedservice_id\")"
+        }
+      ],
+      "row_count": 5
+    },
+    {
+      "name": "accounts_user",
+      "sql": "CREATE TABLE \"accounts_user\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"password\" varchar(128) NOT NULL, \"last_login\" datetime NULL, \"is_superuser\" bool NOT NULL, \"username\" varchar(150) NOT NULL UNIQUE, \"first_name\" varchar(150) NOT NULL, \"last_name\" varchar(150) NOT NULL, \"is_staff\" bool NOT NULL, \"date_joined\" datetime NOT NULL, \"email\" varchar(254) NOT NULL UNIQUE, \"role\" varchar(20) NOT NULL, \"city\" varchar(100) NOT NULL, \"is_verified\" bool NOT NULL, \"is_active\" bool NOT NULL, \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"phone\" varchar(20) NOT NULL, \"location_city_id\" bigint NULL REFERENCES \"core_city\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"location_district_id\" bigint NULL REFERENCES \"core_district\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "password",
+          "type": "varchar(128)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "last_login",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "is_superuser",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "username",
+          "type": "varchar(150)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "first_name",
+          "type": "varchar(150)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "last_name",
+          "type": "varchar(150)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "is_staff",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "date_joined",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "email",
+          "type": "varchar(254)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "role",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "city",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "is_verified",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "phone",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "location_city_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "location_district_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "core_district",
+          "from": "location_district_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "core_city",
+          "from": "location_city_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "accounts_user_location_district_id_125d3ac9",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 18,
+              "name": "location_district_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_user_location_district_id_125d3ac9\" ON \"accounts_user\" (\"location_district_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "accounts_user_location_city_id_ef1d99b6",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 17,
+              "name": "location_city_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_user_location_city_id_ef1d99b6\" ON \"accounts_user\" (\"location_city_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "sqlite_autoindex_accounts_user_2",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 9,
+              "name": "email"
+            }
+          ],
+          "sql": null
+        },
+        {
+          "seq": 3,
+          "name": "sqlite_autoindex_accounts_user_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "username"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 28
+    },
+    {
+      "name": "accounts_user_groups",
+      "sql": "CREATE TABLE \"accounts_user_groups\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"user_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"group_id\" integer NOT NULL REFERENCES \"auth_group\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "group_id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "auth_group",
+          "from": "group_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "accounts_user_groups_group_id_bd11a704",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "group_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_user_groups_group_id_bd11a704\" ON \"accounts_user_groups\" (\"group_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "accounts_user_groups_user_id_52b62117",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "user_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_user_groups_user_id_52b62117\" ON \"accounts_user_groups\" (\"user_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "accounts_user_groups_user_id_group_id_59c0b32f_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "user_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "group_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"accounts_user_groups_user_id_group_id_59c0b32f_uniq\" ON \"accounts_user_groups\" (\"user_id\", \"group_id\")"
+        }
+      ],
+      "row_count": 0
+    },
+    {
+      "name": "accounts_user_user_permissions",
+      "sql": "CREATE TABLE \"accounts_user_user_permissions\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"user_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"permission_id\" integer NOT NULL REFERENCES \"auth_permission\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "permission_id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "auth_permission",
+          "from": "permission_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "accounts_user_user_permissions_permission_id_113bb443",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "permission_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_user_user_permissions_permission_id_113bb443\" ON \"accounts_user_user_permissions\" (\"permission_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "accounts_user_user_permissions_user_id_e4f0a161",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "user_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"accounts_user_user_permissions_user_id_e4f0a161\" ON \"accounts_user_user_permissions\" (\"user_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "accounts_user_user_permissions_user_id_permission_id_2ab516c2_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "user_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "permission_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"accounts_user_user_permissions_user_id_permission_id_2ab516c2_uniq\" ON \"accounts_user_user_permissions\" (\"user_id\", \"permission_id\")"
+        }
+      ],
+      "row_count": 0
+    },
+    {
+      "name": "auth_group",
+      "sql": "CREATE TABLE \"auth_group\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" varchar(150) NOT NULL UNIQUE)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "varchar(150)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "sqlite_autoindex_auth_group_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "name"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 0
+    },
+    {
+      "name": "auth_group_permissions",
+      "sql": "CREATE TABLE \"auth_group_permissions\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"group_id\" integer NOT NULL REFERENCES \"auth_group\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"permission_id\" integer NOT NULL REFERENCES \"auth_permission\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "group_id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "permission_id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "auth_permission",
+          "from": "permission_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "auth_group",
+          "from": "group_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "auth_group_permissions_permission_id_84c5c92e",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "permission_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"auth_group_permissions_permission_id_84c5c92e\" ON \"auth_group_permissions\" (\"permission_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "auth_group_permissions_group_id_b120cbf9",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "group_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"auth_group_permissions_group_id_b120cbf9\" ON \"auth_group_permissions\" (\"group_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "auth_group_permissions_group_id_permission_id_0cd325b0_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "group_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "permission_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"auth_group_permissions_group_id_permission_id_0cd325b0_uniq\" ON \"auth_group_permissions\" (\"group_id\", \"permission_id\")"
+        }
+      ],
+      "row_count": 0
+    },
+    {
+      "name": "auth_permission",
+      "sql": "CREATE TABLE \"auth_permission\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"content_type_id\" integer NOT NULL REFERENCES \"django_content_type\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"codename\" varchar(100) NOT NULL, \"name\" varchar(255) NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "content_type_id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "codename",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "name",
+          "type": "varchar(255)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "django_content_type",
+          "from": "content_type_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "auth_permission_content_type_id_2f476e4b",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "content_type_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"auth_permission_content_type_id_2f476e4b\" ON \"auth_permission\" (\"content_type_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "auth_permission_content_type_id_codename_01ab375a_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "content_type_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "codename"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"auth_permission_content_type_id_codename_01ab375a_uniq\" ON \"auth_permission\" (\"content_type_id\", \"codename\")"
+        }
+      ],
+      "row_count": 150
+    },
+    {
+      "name": "chat_conversation",
+      "sql": "CREATE TABLE \"chat_conversation\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"customer_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"provider_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"service_id\" bigint NULL REFERENCES \"marketplace_service\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "customer_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "provider_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "service_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "marketplace_service",
+          "from": "service_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "provider_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "customer_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "chat_conversation_service_id_47192b79",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "service_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"chat_conversation_service_id_47192b79\" ON \"chat_conversation\" (\"service_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "chat_conversation_provider_id_b90af0ed",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "provider_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"chat_conversation_provider_id_b90af0ed\" ON \"chat_conversation\" (\"provider_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "chat_conversation_customer_id_9b2323d3",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 3,
+              "name": "customer_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"chat_conversation_customer_id_9b2323d3\" ON \"chat_conversation\" (\"customer_id\")"
+        },
+        {
+          "seq": 3,
+          "name": "chat_conversation_customer_id_provider_id_db996b8e_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 3,
+              "name": "customer_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 4,
+              "name": "provider_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"chat_conversation_customer_id_provider_id_db996b8e_uniq\" ON \"chat_conversation\" (\"customer_id\", \"provider_id\")"
+        }
+      ],
+      "row_count": 3
+    },
+    {
+      "name": "chat_message",
+      "sql": "CREATE TABLE \"chat_message\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"content\" text NOT NULL, \"is_read\" bool NOT NULL, \"created_at\" datetime NOT NULL, \"conversation_id\" bigint NOT NULL REFERENCES \"chat_conversation\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"sender_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "content",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "is_read",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "conversation_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "sender_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "sender_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "chat_conversation",
+          "from": "conversation_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "chat_message_sender_id_991c686c",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "sender_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"chat_message_sender_id_991c686c\" ON \"chat_message\" (\"sender_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "chat_message_conversation_id_a1207bf4",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "conversation_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"chat_message_conversation_id_a1207bf4\" ON \"chat_message\" (\"conversation_id\")"
+        }
+      ],
+      "row_count": 5
+    },
+    {
+      "name": "core_auditlog",
+      "sql": "CREATE TABLE \"core_auditlog\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"action\" varchar(100) NOT NULL, \"object_id\" varchar(64) NOT NULL, \"metadata\" text NOT NULL CHECK ((JSON_VALID(\"metadata\") OR \"metadata\" IS NULL)), \"created_at\" datetime NOT NULL, \"actor_id\" bigint NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"content_type_id\" integer NULL REFERENCES \"django_content_type\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "action",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "object_id",
+          "type": "varchar(64)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "metadata",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "actor_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "content_type_id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "django_content_type",
+          "from": "content_type_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "actor_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "core_auditlog_content_type_id_0a26d6b4",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 6,
+              "name": "content_type_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_auditlog_content_type_id_0a26d6b4\" ON \"core_auditlog\" (\"content_type_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "core_auditlog_actor_id_ab091f3c",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "actor_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_auditlog_actor_id_ab091f3c\" ON \"core_auditlog\" (\"actor_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "core_auditlog_created_at_3d40b819",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "created_at"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_auditlog_created_at_3d40b819\" ON \"core_auditlog\" (\"created_at\")"
+        },
+        {
+          "seq": 3,
+          "name": "core_auditlog_action_978477aa",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "action"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_auditlog_action_978477aa\" ON \"core_auditlog\" (\"action\")"
+        }
+      ],
+      "row_count": 64
+    },
+    {
+      "name": "core_city",
+      "sql": "CREATE TABLE \"core_city\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" varchar(100) NOT NULL UNIQUE, \"is_active\" bool NOT NULL, \"order\" integer unsigned NOT NULL CHECK (\"order\" >= 0), \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "order",
+          "type": "integer unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "core_city_is_active_946bfe5a",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_city_is_active_946bfe5a\" ON \"core_city\" (\"is_active\")"
+        },
+        {
+          "seq": 1,
+          "name": "sqlite_autoindex_core_city_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "name"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 22
+    },
+    {
+      "name": "core_district",
+      "sql": "CREATE TABLE \"core_district\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" varchar(100) NOT NULL, \"is_active\" bool NOT NULL, \"order\" integer unsigned NOT NULL CHECK (\"order\" >= 0), \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"city_id\" bigint NOT NULL REFERENCES \"core_city\" (\"id\") DEFERRABLE INITIALLY DEFERRED, CONSTRAINT \"unique_district_per_city\" UNIQUE (\"city_id\", \"name\"))",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "order",
+          "type": "integer unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "city_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "core_city",
+          "from": "city_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "core_distri_city_id_405d96_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 6,
+              "name": "city_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_distri_city_id_405d96_idx\" ON \"core_district\" (\"city_id\", \"is_active\")"
+        },
+        {
+          "seq": 1,
+          "name": "core_district_city_id_b6b3326c",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 6,
+              "name": "city_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_district_city_id_b6b3326c\" ON \"core_district\" (\"city_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "core_district_is_active_fba58cf4",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_district_is_active_fba58cf4\" ON \"core_district\" (\"is_active\")"
+        },
+        {
+          "seq": 3,
+          "name": "sqlite_autoindex_core_district_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 6,
+              "name": "city_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 1,
+              "name": "name"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 324
+    },
+    {
+      "name": "core_notification",
+      "sql": "CREATE TABLE \"core_notification\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"event_type\" varchar(40) NOT NULL, \"title\" varchar(200) NOT NULL, \"message\" text NOT NULL, \"is_read\" bool NOT NULL, \"created_at\" datetime NOT NULL, \"recipient_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "event_type",
+          "type": "varchar(40)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "title",
+          "type": "varchar(200)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "message",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "is_read",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "recipient_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "recipient_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "core_notification_recipient_id_24a3d95c",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 6,
+              "name": "recipient_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_notification_recipient_id_24a3d95c\" ON \"core_notification\" (\"recipient_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "core_notification_created_at_1aa134a3",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "created_at"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_notification_created_at_1aa134a3\" ON \"core_notification\" (\"created_at\")"
+        },
+        {
+          "seq": 2,
+          "name": "core_notification_is_read_b72834ba",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "is_read"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_notification_is_read_b72834ba\" ON \"core_notification\" (\"is_read\")"
+        },
+        {
+          "seq": 3,
+          "name": "core_notification_event_type_9d2f8c90",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "event_type"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_notification_event_type_9d2f8c90\" ON \"core_notification\" (\"event_type\")"
+        }
+      ],
+      "row_count": 67
+    },
+    {
+      "name": "core_platformsetting",
+      "sql": "CREATE TABLE \"core_platformsetting\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"key\" varchar(100) NOT NULL UNIQUE, \"value\" varchar(500) NOT NULL, \"description\" text NOT NULL, \"updated_at\" datetime NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "key",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "value",
+          "type": "varchar(500)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "description",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "sqlite_autoindex_core_platformsetting_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "key"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 0
+    },
+    {
+      "name": "core_termsacceptance",
+      "sql": "CREATE TABLE \"core_termsacceptance\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"commission_rate\" decimal NOT NULL, \"accepted_at\" datetime NOT NULL, \"ip_address\" char(39) NULL, \"terms_id\" bigint NOT NULL REFERENCES \"core_termsandconditions\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"user_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "commission_rate",
+          "type": "decimal",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "accepted_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "ip_address",
+          "type": "char(39)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "terms_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "user_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "core_termsandconditions",
+          "from": "terms_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "core_termsacceptance_user_id_1bd63ff8",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "user_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_termsacceptance_user_id_1bd63ff8\" ON \"core_termsacceptance\" (\"user_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "core_termsacceptance_terms_id_d27b983a",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "terms_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_termsacceptance_terms_id_d27b983a\" ON \"core_termsacceptance\" (\"terms_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "core_termsacceptance_user_id_terms_id_6452c4bd_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "user_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 4,
+              "name": "terms_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"core_termsacceptance_user_id_terms_id_6452c4bd_uniq\" ON \"core_termsacceptance\" (\"user_id\", \"terms_id\")"
+        }
+      ],
+      "row_count": 10
+    },
+    {
+      "name": "core_termsandconditions",
+      "sql": "CREATE TABLE \"core_termsandconditions\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"version\" varchar(30) NOT NULL UNIQUE, \"content\" text NOT NULL, \"commission_rate\" decimal NOT NULL, \"is_active\" bool NOT NULL, \"published_at\" datetime NULL, \"created_at\" datetime NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "version",
+          "type": "varchar(30)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "content",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "commission_rate",
+          "type": "decimal",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "published_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "core_termsandconditions_is_active_129793e2",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"core_termsandconditions_is_active_129793e2\" ON \"core_termsandconditions\" (\"is_active\")"
+        },
+        {
+          "seq": 1,
+          "name": "sqlite_autoindex_core_termsandconditions_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "version"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 2
+    },
+    {
+      "name": "django_admin_log",
+      "sql": "CREATE TABLE \"django_admin_log\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"object_id\" text NULL, \"object_repr\" varchar(200) NOT NULL, \"action_flag\" smallint unsigned NOT NULL CHECK (\"action_flag\" >= 0), \"change_message\" text NOT NULL, \"content_type_id\" integer NULL REFERENCES \"django_content_type\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"user_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"action_time\" datetime NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "object_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "object_repr",
+          "type": "varchar(200)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "action_flag",
+          "type": "smallint unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "change_message",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "content_type_id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "user_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "action_time",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "django_content_type",
+          "from": "content_type_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "django_admin_log_user_id_c564eba6",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 6,
+              "name": "user_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"django_admin_log_user_id_c564eba6\" ON \"django_admin_log\" (\"user_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "django_admin_log_content_type_id_c4bce8eb",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "content_type_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"django_admin_log_content_type_id_c4bce8eb\" ON \"django_admin_log\" (\"content_type_id\")"
+        }
+      ],
+      "row_count": 145
+    },
+    {
+      "name": "django_content_type",
+      "sql": "CREATE TABLE \"django_content_type\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"app_label\" varchar(100) NOT NULL, \"model\" varchar(100) NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "app_label",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "model",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "django_content_type_app_label_model_76bd3d3b_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "app_label"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "model"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"django_content_type_app_label_model_76bd3d3b_uniq\" ON \"django_content_type\" (\"app_label\", \"model\")"
+        }
+      ],
+      "row_count": 36
+    },
+    {
+      "name": "django_migrations",
+      "sql": "CREATE TABLE \"django_migrations\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"app\" varchar(255) NOT NULL, \"name\" varchar(255) NOT NULL, \"applied\" datetime NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "app",
+          "type": "varchar(255)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "name",
+          "type": "varchar(255)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "applied",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [],
+      "row_count": 50
+    },
+    {
+      "name": "django_session",
+      "sql": "CREATE TABLE \"django_session\" (\"session_key\" varchar(40) NOT NULL PRIMARY KEY, \"session_data\" text NOT NULL, \"expire_date\" datetime NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "session_key",
+          "type": "varchar(40)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "session_data",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "expire_date",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "django_session_expire_date_a5c62663",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "expire_date"
+            }
+          ],
+          "sql": "CREATE INDEX \"django_session_expire_date_a5c62663\" ON \"django_session\" (\"expire_date\")"
+        },
+        {
+          "seq": 1,
+          "name": "sqlite_autoindex_django_session_1",
+          "unique": 1,
+          "origin": "pk",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 0,
+              "name": "session_key"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 40
+    },
+    {
+      "name": "marketplace_category",
+      "sql": "CREATE TABLE \"marketplace_category\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" varchar(100) NOT NULL UNIQUE, \"description\" text NOT NULL, \"icon\" varchar(50) NOT NULL, \"is_active\" bool NOT NULL, \"order\" integer NOT NULL, \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"image\" varchar(100) NULL, \"slug\" varchar(120) NULL UNIQUE, \"parent_id\" bigint NULL REFERENCES \"marketplace_category\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "description",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "icon",
+          "type": "varchar(50)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "order",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "image",
+          "type": "varchar(100)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "slug",
+          "type": "varchar(120)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "parent_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "marketplace_category",
+          "from": "parent_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "marketplace_slug_d22abd_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 9,
+              "name": "slug"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_slug_d22abd_idx\" ON \"marketplace_category\" (\"slug\")"
+        },
+        {
+          "seq": 1,
+          "name": "marketplace_is_acti_82ee6f_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "is_active"
+            },
+            {
+              "seqno": 1,
+              "cid": 5,
+              "name": "order"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_is_acti_82ee6f_idx\" ON \"marketplace_category\" (\"is_active\", \"order\")"
+        },
+        {
+          "seq": 2,
+          "name": "marketplace_category_parent_id_d956816a",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 10,
+              "name": "parent_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_category_parent_id_d956816a\" ON \"marketplace_category\" (\"parent_id\")"
+        },
+        {
+          "seq": 3,
+          "name": "sqlite_autoindex_marketplace_category_2",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 9,
+              "name": "slug"
+            }
+          ],
+          "sql": null
+        },
+        {
+          "seq": 4,
+          "name": "sqlite_autoindex_marketplace_category_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "name"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 24
+    },
+    {
+      "name": "marketplace_managedservice",
+      "sql": "CREATE TABLE \"marketplace_managedservice\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" varchar(120) NOT NULL UNIQUE, \"is_active\" bool NOT NULL, \"order\" integer unsigned NOT NULL CHECK (\"order\" >= 0), \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"description\" text NOT NULL, \"category_id\" bigint NULL REFERENCES \"marketplace_category\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "varchar(120)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "order",
+          "type": "integer unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "description",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "category_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "marketplace_category",
+          "from": "category_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "marketplace_managedservice_category_id_13865056",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 7,
+              "name": "category_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_managedservice_category_id_13865056\" ON \"marketplace_managedservice\" (\"category_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "marketplace_categor_4785a5_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 7,
+              "name": "category_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "is_active"
+            },
+            {
+              "seqno": 2,
+              "cid": 3,
+              "name": "order"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_categor_4785a5_idx\" ON \"marketplace_managedservice\" (\"category_id\", \"is_active\", \"order\")"
+        },
+        {
+          "seq": 2,
+          "name": "marketplace_managedservice_is_active_178af69b",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_managedservice_is_active_178af69b\" ON \"marketplace_managedservice\" (\"is_active\")"
+        },
+        {
+          "seq": 3,
+          "name": "sqlite_autoindex_marketplace_managedservice_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "name"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 7
+    },
+    {
+      "name": "marketplace_providerservice",
+      "sql": "CREATE TABLE \"marketplace_providerservice\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"description\" text NOT NULL, \"price\" decimal NOT NULL, \"price_type\" varchar(20) NOT NULL, \"estimated_duration\" integer unsigned NOT NULL CHECK (\"estimated_duration\" >= 0), \"is_active\" bool NOT NULL, \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"provider_id\" bigint NOT NULL REFERENCES \"accounts_providerprofile\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"service_id\" bigint NULL REFERENCES \"marketplace_service\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"approval_status\" varchar(20) NOT NULL, \"catalog_service_id\" bigint NULL REFERENCES \"marketplace_managedservice\" (\"id\") DEFERRABLE INITIALLY DEFERRED, CONSTRAINT \"provider_service_exactly_one_source\" CHECK (((\"catalog_service_id\" IS NULL AND \"service_id\" IS NOT NULL) OR (\"catalog_service_id\" IS NOT NULL AND \"service_id\" IS NULL))))",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "description",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "price",
+          "type": "decimal",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "price_type",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "estimated_duration",
+          "type": "integer unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "provider_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "service_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "approval_status",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "catalog_service_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "marketplace_managedservice",
+          "from": "catalog_service_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "marketplace_service",
+          "from": "service_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "accounts_providerprofile",
+          "from": "provider_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "marketplace_provide_66d8d4_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 8,
+              "name": "provider_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 5,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_provide_66d8d4_idx\" ON \"marketplace_providerservice\" (\"provider_id\", \"is_active\")"
+        },
+        {
+          "seq": 1,
+          "name": "marketplace_service_893bff_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 9,
+              "name": "service_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 5,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_service_893bff_idx\" ON \"marketplace_providerservice\" (\"service_id\", \"is_active\")"
+        },
+        {
+          "seq": 2,
+          "name": "marketplace_providerservice_catalog_service_id_f013c078",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 11,
+              "name": "catalog_service_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_providerservice_catalog_service_id_f013c078\" ON \"marketplace_providerservice\" (\"catalog_service_id\")"
+        },
+        {
+          "seq": 3,
+          "name": "marketplace_providerservice_approval_status_fac8d01d",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 10,
+              "name": "approval_status"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_providerservice_approval_status_fac8d01d\" ON \"marketplace_providerservice\" (\"approval_status\")"
+        },
+        {
+          "seq": 4,
+          "name": "marketplace_providerservice_service_id_ba9c1a2c",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 9,
+              "name": "service_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_providerservice_service_id_ba9c1a2c\" ON \"marketplace_providerservice\" (\"service_id\")"
+        },
+        {
+          "seq": 5,
+          "name": "marketplace_providerservice_provider_id_955d7ab8",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 8,
+              "name": "provider_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_providerservice_provider_id_955d7ab8\" ON \"marketplace_providerservice\" (\"provider_id\")"
+        },
+        {
+          "seq": 6,
+          "name": "marketplace_providerservice_is_active_8e13ccc6",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_providerservice_is_active_8e13ccc6\" ON \"marketplace_providerservice\" (\"is_active\")"
+        },
+        {
+          "seq": 7,
+          "name": "unique_provider_catalog_service",
+          "unique": 1,
+          "origin": "c",
+          "partial": 1,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 8,
+              "name": "provider_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 11,
+              "name": "catalog_service_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"unique_provider_catalog_service\" ON \"marketplace_providerservice\" (\"provider_id\", \"catalog_service_id\") WHERE \"catalog_service_id\" IS NOT NULL"
+        },
+        {
+          "seq": 8,
+          "name": "unique_provider_listing_service",
+          "unique": 1,
+          "origin": "c",
+          "partial": 1,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 8,
+              "name": "provider_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 9,
+              "name": "service_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"unique_provider_listing_service\" ON \"marketplace_providerservice\" (\"provider_id\", \"service_id\") WHERE \"service_id\" IS NOT NULL"
+        }
+      ],
+      "row_count": 4
+    },
+    {
+      "name": "marketplace_qualification",
+      "sql": "CREATE TABLE \"marketplace_qualification\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" varchar(120) NOT NULL UNIQUE, \"is_active\" bool NOT NULL, \"order\" integer unsigned NOT NULL CHECK (\"order\" >= 0), \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "varchar(120)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "order",
+          "type": "integer unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "marketplace_qualification_is_active_e49af743",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_qualification_is_active_e49af743\" ON \"marketplace_qualification\" (\"is_active\")"
+        },
+        {
+          "seq": 1,
+          "name": "sqlite_autoindex_marketplace_qualification_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "name"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 7
+    },
+    {
+      "name": "marketplace_service",
+      "sql": "CREATE TABLE \"marketplace_service\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"title\" varchar(200) NOT NULL, \"description\" text NOT NULL, \"price_type\" varchar(20) NOT NULL, \"price\" decimal NULL, \"delivery_time\" integer NOT NULL, \"image\" varchar(100) NULL, \"status\" varchar(20) NOT NULL, \"views_count\" integer NOT NULL, \"orders_count\" integer NOT NULL, \"average_rating\" decimal NOT NULL, \"is_featured\" bool NOT NULL, \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"category_id\" bigint NULL REFERENCES \"marketplace_category\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"provider_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"currency\" varchar(3) NOT NULL, \"provider_service_id\" bigint NULL REFERENCES \"marketplace_providerservice\" (\"id\") DEFERRABLE INITIALLY DEFERRED, CONSTRAINT \"service_price_non_negative\" CHECK ((\"price\" >= '0' OR \"price\" IS NULL)))",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "title",
+          "type": "varchar(200)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "description",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "price_type",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "price",
+          "type": "decimal",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "delivery_time",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "image",
+          "type": "varchar(100)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "status",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "views_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "orders_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "average_rating",
+          "type": "decimal",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "is_featured",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "category_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "provider_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "currency",
+          "type": "varchar(3)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "provider_service_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "marketplace_providerservice",
+          "from": "provider_service_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "provider_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "marketplace_category",
+          "from": "category_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "marketplace_service_provider_service_id_2bef004b",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 17,
+              "name": "provider_service_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_service_provider_service_id_2bef004b\" ON \"marketplace_service\" (\"provider_service_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "marketplace_provide_c7ef54_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 15,
+              "name": "provider_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 7,
+              "name": "status"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_provide_c7ef54_idx\" ON \"marketplace_service\" (\"provider_id\", \"status\")"
+        },
+        {
+          "seq": 2,
+          "name": "marketplace_categor_e8a41c_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 14,
+              "name": "category_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 7,
+              "name": "status"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_categor_e8a41c_idx\" ON \"marketplace_service\" (\"category_id\", \"status\")"
+        },
+        {
+          "seq": 3,
+          "name": "marketplace_status_204a90_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 7,
+              "name": "status"
+            },
+            {
+              "seqno": 1,
+              "cid": 12,
+              "name": "created_at"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_status_204a90_idx\" ON \"marketplace_service\" (\"status\", \"created_at\" DESC)"
+        },
+        {
+          "seq": 4,
+          "name": "marketplace_service_provider_id_e3dd3170",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 15,
+              "name": "provider_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_service_provider_id_e3dd3170\" ON \"marketplace_service\" (\"provider_id\")"
+        },
+        {
+          "seq": 5,
+          "name": "marketplace_service_category_id_50659bdc",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 14,
+              "name": "category_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_service_category_id_50659bdc\" ON \"marketplace_service\" (\"category_id\")"
+        }
+      ],
+      "row_count": 15
+    },
+    {
+      "name": "marketplace_specialization",
+      "sql": "CREATE TABLE \"marketplace_specialization\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" varchar(120) NOT NULL UNIQUE, \"is_active\" bool NOT NULL, \"order\" integer unsigned NOT NULL CHECK (\"order\" >= 0), \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "varchar(120)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "order",
+          "type": "integer unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "marketplace_specialization_is_active_c5f0cffa",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"marketplace_specialization_is_active_c5f0cffa\" ON \"marketplace_specialization\" (\"is_active\")"
+        },
+        {
+          "seq": 1,
+          "name": "sqlite_autoindex_marketplace_specialization_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "name"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 45
+    },
+    {
+      "name": "orders_delivery",
+      "sql": "CREATE TABLE \"orders_delivery\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"file\" varchar(100) NOT NULL, \"description\" text NOT NULL, \"delivered_at\" datetime NOT NULL, \"is_accepted\" bool NOT NULL, \"reviewed_at\" datetime NULL, \"review_note\" text NOT NULL, \"order_id\" bigint NOT NULL REFERENCES \"orders_order\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "file",
+          "type": "varchar(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "description",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "delivered_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "is_accepted",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "reviewed_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "review_note",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "order_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "orders_order",
+          "from": "order_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "orders_delivery_order_id_08b5bcf9",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 7,
+              "name": "order_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"orders_delivery_order_id_08b5bcf9\" ON \"orders_delivery\" (\"order_id\")"
+        }
+      ],
+      "row_count": 6
+    },
+    {
+      "name": "orders_milestone",
+      "sql": "CREATE TABLE \"orders_milestone\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"title\" varchar(200) NOT NULL, \"description\" text NOT NULL, \"percentage\" integer NOT NULL, \"is_completed\" bool NOT NULL, \"completed_at\" datetime NULL, \"order_index\" integer NOT NULL, \"created_at\" datetime NOT NULL, \"order_id\" bigint NOT NULL REFERENCES \"orders_order\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "title",
+          "type": "varchar(200)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "description",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "percentage",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "is_completed",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "completed_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "order_index",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "order_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "orders_order",
+          "from": "order_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "orders_milestone_order_id_cc29d5e4",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 8,
+              "name": "order_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"orders_milestone_order_id_cc29d5e4\" ON \"orders_milestone\" (\"order_id\")"
+        }
+      ],
+      "row_count": 0
+    },
+    {
+      "name": "orders_order",
+      "sql": "CREATE TABLE \"orders_order\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"order_number\" varchar(50) NOT NULL UNIQUE, \"title\" varchar(200) NOT NULL, \"description\" text NOT NULL, \"agreed_price\" decimal NOT NULL, \"delivery_days\" integer NOT NULL, \"expected_delivery_date\" date NULL, \"status\" varchar(20) NOT NULL, \"payment_status\" varchar(20) NOT NULL, \"created_at\" datetime NOT NULL, \"accepted_at\" datetime NULL, \"started_at\" datetime NULL, \"delivered_at\" datetime NULL, \"completed_at\" datetime NULL, \"cancelled_at\" datetime NULL, \"cancellation_reason\" text NOT NULL, \"customer_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"provider_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"service_id\" bigint NULL REFERENCES \"marketplace_service\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"commission_amount\" decimal NULL, \"commission_rate\" decimal NULL, \"currency\" varchar(3) NOT NULL, \"dispute_reason\" text NOT NULL, \"provider_net_amount\" decimal NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "order_number",
+          "type": "varchar(50)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "title",
+          "type": "varchar(200)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "description",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "agreed_price",
+          "type": "decimal",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "delivery_days",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "expected_delivery_date",
+          "type": "date",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "status",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "payment_status",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "accepted_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "started_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "delivered_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "completed_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "cancelled_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "cancellation_reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "customer_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "provider_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "service_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 19,
+          "name": "commission_amount",
+          "type": "decimal",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 20,
+          "name": "commission_rate",
+          "type": "decimal",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 21,
+          "name": "currency",
+          "type": "varchar(3)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 22,
+          "name": "dispute_reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 23,
+          "name": "provider_net_amount",
+          "type": "decimal",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "marketplace_service",
+          "from": "service_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "provider_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "customer_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "orders_orde_order_n_f3ada5_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "order_number"
+            }
+          ],
+          "sql": "CREATE INDEX \"orders_orde_order_n_f3ada5_idx\" ON \"orders_order\" (\"order_number\")"
+        },
+        {
+          "seq": 1,
+          "name": "orders_orde_provide_856163_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 17,
+              "name": "provider_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 7,
+              "name": "status"
+            }
+          ],
+          "sql": "CREATE INDEX \"orders_orde_provide_856163_idx\" ON \"orders_order\" (\"provider_id\", \"status\")"
+        },
+        {
+          "seq": 2,
+          "name": "orders_orde_custome_c9b64a_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 16,
+              "name": "customer_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 7,
+              "name": "status"
+            }
+          ],
+          "sql": "CREATE INDEX \"orders_orde_custome_c9b64a_idx\" ON \"orders_order\" (\"customer_id\", \"status\")"
+        },
+        {
+          "seq": 3,
+          "name": "orders_orde_status_079368_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 7,
+              "name": "status"
+            },
+            {
+              "seqno": 1,
+              "cid": 9,
+              "name": "created_at"
+            }
+          ],
+          "sql": "CREATE INDEX \"orders_orde_status_079368_idx\" ON \"orders_order\" (\"status\", \"created_at\" DESC)"
+        },
+        {
+          "seq": 4,
+          "name": "orders_order_service_id_b6affa07",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 18,
+              "name": "service_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"orders_order_service_id_b6affa07\" ON \"orders_order\" (\"service_id\")"
+        },
+        {
+          "seq": 5,
+          "name": "orders_order_provider_id_8c5b5fe6",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 17,
+              "name": "provider_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"orders_order_provider_id_8c5b5fe6\" ON \"orders_order\" (\"provider_id\")"
+        },
+        {
+          "seq": 6,
+          "name": "orders_order_customer_id_0b76f6a4",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 16,
+              "name": "customer_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"orders_order_customer_id_0b76f6a4\" ON \"orders_order\" (\"customer_id\")"
+        },
+        {
+          "seq": 7,
+          "name": "sqlite_autoindex_orders_order_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 1,
+              "name": "order_number"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 10
+    },
+    {
+      "name": "orders_ordermessage",
+      "sql": "CREATE TABLE \"orders_ordermessage\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"message\" text NOT NULL, \"created_at\" datetime NOT NULL, \"is_read\" bool NOT NULL, \"order_id\" bigint NOT NULL REFERENCES \"orders_order\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"sender_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "message",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "is_read",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "order_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "sender_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "sender_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "orders_order",
+          "from": "order_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "orders_ordermessage_sender_id_b8cfb343",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "sender_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"orders_ordermessage_sender_id_b8cfb343\" ON \"orders_ordermessage\" (\"sender_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "orders_ordermessage_order_id_f48b0135",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "order_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"orders_ordermessage_order_id_f48b0135\" ON \"orders_ordermessage\" (\"order_id\")"
+        }
+      ],
+      "row_count": 3
+    },
+    {
+      "name": "payments_commissionrecord",
+      "sql": "CREATE TABLE \"payments_commissionrecord\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"commission_rate\" decimal NOT NULL, \"gross_amount\" decimal NOT NULL, \"commission_amount\" decimal NOT NULL, \"provider_net_amount\" decimal NOT NULL, \"currency\" varchar(3) NOT NULL, \"created_at\" datetime NOT NULL, \"order_id\" bigint NOT NULL UNIQUE REFERENCES \"orders_order\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"payment_id\" bigint NULL UNIQUE REFERENCES \"payments_payment\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "commission_rate",
+          "type": "decimal",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "gross_amount",
+          "type": "decimal",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "commission_amount",
+          "type": "decimal",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "provider_net_amount",
+          "type": "decimal",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "currency",
+          "type": "varchar(3)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "order_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "payment_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "payments_payment",
+          "from": "payment_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "orders_order",
+          "from": "order_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "sqlite_autoindex_payments_commissionrecord_2",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 8,
+              "name": "payment_id"
+            }
+          ],
+          "sql": null
+        },
+        {
+          "seq": 1,
+          "name": "sqlite_autoindex_payments_commissionrecord_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 7,
+              "name": "order_id"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 7
+    },
+    {
+      "name": "payments_payment",
+      "sql": "CREATE TABLE \"payments_payment\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"amount\" decimal NOT NULL, \"currency\" varchar(3) NOT NULL, \"status\" varchar(20) NOT NULL, \"transaction_id\" varchar(120) NOT NULL, \"gateway\" varchar(80) NOT NULL, \"paid_at\" datetime NULL, \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"order_id\" bigint NOT NULL REFERENCES \"orders_order\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"commission_amount\" decimal NULL, \"commission_rate\" decimal NULL, \"proof_file\" varchar(100) NULL, \"proof_uploaded_at\" datetime NULL, \"provider_net_amount\" decimal NULL, \"provider_wallet_account_snapshot\" varchar(30) NOT NULL, \"review_note\" text NOT NULL, \"reviewed_at\" datetime NULL, \"reviewed_by_id\" bigint NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"payment_method\" varchar(50) NOT NULL, \"provider_wallet_id\" bigint NULL REFERENCES \"payments_providerwallet\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "amount",
+          "type": "decimal",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "currency",
+          "type": "varchar(3)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "status",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "transaction_id",
+          "type": "varchar(120)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "gateway",
+          "type": "varchar(80)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "paid_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "order_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "commission_amount",
+          "type": "decimal",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "commission_rate",
+          "type": "decimal",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "proof_file",
+          "type": "varchar(100)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "proof_uploaded_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "provider_net_amount",
+          "type": "decimal",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "provider_wallet_account_snapshot",
+          "type": "varchar(30)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "review_note",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "reviewed_at",
+          "type": "datetime",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "reviewed_by_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 19,
+          "name": "payment_method",
+          "type": "varchar(50)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 20,
+          "name": "provider_wallet_id",
+          "type": "bigint",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "payments_providerwallet",
+          "from": "provider_wallet_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "reviewed_by_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "orders_order",
+          "from": "order_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "payments_payment_provider_wallet_id_87bf2a7c",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 20,
+              "name": "provider_wallet_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_payment_provider_wallet_id_87bf2a7c\" ON \"payments_payment\" (\"provider_wallet_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "payments_pa_payment_cf3303_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 19,
+              "name": "payment_method"
+            },
+            {
+              "seqno": 1,
+              "cid": 7,
+              "name": "created_at"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_pa_payment_cf3303_idx\" ON \"payments_payment\" (\"payment_method\", \"created_at\")"
+        },
+        {
+          "seq": 2,
+          "name": "payments_pa_status_343680_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 3,
+              "name": "status"
+            },
+            {
+              "seqno": 1,
+              "cid": 7,
+              "name": "created_at"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_pa_status_343680_idx\" ON \"payments_payment\" (\"status\", \"created_at\")"
+        },
+        {
+          "seq": 3,
+          "name": "payments_payment_reviewed_by_id_84bfbfdc",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 18,
+              "name": "reviewed_by_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_payment_reviewed_by_id_84bfbfdc\" ON \"payments_payment\" (\"reviewed_by_id\")"
+        },
+        {
+          "seq": 4,
+          "name": "payments_payment_order_id_22c479b7",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 9,
+              "name": "order_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_payment_order_id_22c479b7\" ON \"payments_payment\" (\"order_id\")"
+        },
+        {
+          "seq": 5,
+          "name": "payments_payment_created_at_149046d5",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 7,
+              "name": "created_at"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_payment_created_at_149046d5\" ON \"payments_payment\" (\"created_at\")"
+        },
+        {
+          "seq": 6,
+          "name": "payments_payment_transaction_id_55f6af3a",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "transaction_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_payment_transaction_id_55f6af3a\" ON \"payments_payment\" (\"transaction_id\")"
+        },
+        {
+          "seq": 7,
+          "name": "payments_payment_status_fc8cbda2",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 3,
+              "name": "status"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_payment_status_fc8cbda2\" ON \"payments_payment\" (\"status\")"
+        }
+      ],
+      "row_count": 8
+    },
+    {
+      "name": "payments_providerwallet",
+      "sql": "CREATE TABLE \"payments_providerwallet\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"account_number\" varchar(30) NOT NULL, \"is_active\" bool NOT NULL, \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"provider_id\" bigint NOT NULL REFERENCES \"accounts_providerprofile\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"wallet_id\" bigint NOT NULL REFERENCES \"payments_wallet\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "account_number",
+          "type": "varchar(30)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "provider_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "wallet_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "payments_wallet",
+          "from": "wallet_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_providerprofile",
+          "from": "provider_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "payments_providerwallet_wallet_id_7da00cf0",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 6,
+              "name": "wallet_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_providerwallet_wallet_id_7da00cf0\" ON \"payments_providerwallet\" (\"wallet_id\")"
+        },
+        {
+          "seq": 1,
+          "name": "payments_providerwallet_provider_id_ef35e6f7",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "provider_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_providerwallet_provider_id_ef35e6f7\" ON \"payments_providerwallet\" (\"provider_id\")"
+        },
+        {
+          "seq": 2,
+          "name": "payments_providerwallet_is_active_81d1b807",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_providerwallet_is_active_81d1b807\" ON \"payments_providerwallet\" (\"is_active\")"
+        },
+        {
+          "seq": 3,
+          "name": "payments_providerwallet_provider_id_wallet_id_b32d9247_uniq",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "provider_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 6,
+              "name": "wallet_id"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"payments_providerwallet_provider_id_wallet_id_b32d9247_uniq\" ON \"payments_providerwallet\" (\"provider_id\", \"wallet_id\")"
+        },
+        {
+          "seq": 4,
+          "name": "payments_pr_wallet__7abe5f_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 6,
+              "name": "wallet_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_pr_wallet__7abe5f_idx\" ON \"payments_providerwallet\" (\"wallet_id\", \"is_active\")"
+        },
+        {
+          "seq": 5,
+          "name": "payments_pr_provide_9b9325_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "provider_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 2,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_pr_provide_9b9325_idx\" ON \"payments_providerwallet\" (\"provider_id\", \"is_active\")"
+        }
+      ],
+      "row_count": 28
+    },
+    {
+      "name": "payments_wallet",
+      "sql": "CREATE TABLE \"payments_wallet\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" varchar(80) NOT NULL, \"code\" varchar(50) NOT NULL UNIQUE, \"color\" varchar(20) NOT NULL, \"is_active\" bool NOT NULL, \"display_order\" integer unsigned NOT NULL CHECK (\"display_order\" >= 0), \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "varchar(80)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "code",
+          "type": "varchar(50)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "color",
+          "type": "varchar(20)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "is_active",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "display_order",
+          "type": "integer unsigned",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "payments_wallet_display_order_8d7e9bfd",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "display_order"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_wallet_display_order_8d7e9bfd\" ON \"payments_wallet\" (\"display_order\")"
+        },
+        {
+          "seq": 1,
+          "name": "payments_wallet_is_active_d33e6bdf",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 4,
+              "name": "is_active"
+            }
+          ],
+          "sql": "CREATE INDEX \"payments_wallet_is_active_d33e6bdf\" ON \"payments_wallet\" (\"is_active\")"
+        },
+        {
+          "seq": 2,
+          "name": "sqlite_autoindex_payments_wallet_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 2,
+              "name": "code"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 4
+    },
+    {
+      "name": "reviews_review",
+      "sql": "CREATE TABLE \"reviews_review\" (\"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT, \"service_rating\" integer NOT NULL, \"provider_rating\" integer NOT NULL, \"comment\" text NOT NULL, \"is_public\" bool NOT NULL, \"created_at\" datetime NOT NULL, \"updated_at\" datetime NOT NULL, \"customer_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"order_id\" bigint NOT NULL UNIQUE REFERENCES \"orders_order\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"provider_id\" bigint NOT NULL REFERENCES \"accounts_user\" (\"id\") DEFERRABLE INITIALLY DEFERRED, \"service_id\" bigint NOT NULL REFERENCES \"marketplace_service\" (\"id\") DEFERRABLE INITIALLY DEFERRED)",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "service_rating",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "provider_rating",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "comment",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "is_public",
+          "type": "bool",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "updated_at",
+          "type": "datetime",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "customer_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "order_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "provider_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "service_id",
+          "type": "bigint",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "marketplace_service",
+          "from": "service_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "provider_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "orders_order",
+          "from": "order_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 3,
+          "seq": 0,
+          "table": "accounts_user",
+          "from": "customer_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "reviews_rev_created_03e07d_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 5,
+              "name": "created_at"
+            }
+          ],
+          "sql": "CREATE INDEX \"reviews_rev_created_03e07d_idx\" ON \"reviews_review\" (\"created_at\" DESC)"
+        },
+        {
+          "seq": 1,
+          "name": "reviews_rev_provide_688176_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 9,
+              "name": "provider_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 5,
+              "name": "created_at"
+            }
+          ],
+          "sql": "CREATE INDEX \"reviews_rev_provide_688176_idx\" ON \"reviews_review\" (\"provider_id\", \"created_at\" DESC)"
+        },
+        {
+          "seq": 2,
+          "name": "reviews_rev_service_0d3aeb_idx",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 10,
+              "name": "service_id"
+            },
+            {
+              "seqno": 1,
+              "cid": 5,
+              "name": "created_at"
+            }
+          ],
+          "sql": "CREATE INDEX \"reviews_rev_service_0d3aeb_idx\" ON \"reviews_review\" (\"service_id\", \"created_at\" DESC)"
+        },
+        {
+          "seq": 3,
+          "name": "reviews_review_service_id_8aaf292d",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 10,
+              "name": "service_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"reviews_review_service_id_8aaf292d\" ON \"reviews_review\" (\"service_id\")"
+        },
+        {
+          "seq": 4,
+          "name": "reviews_review_provider_id_a27b0220",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 9,
+              "name": "provider_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"reviews_review_provider_id_a27b0220\" ON \"reviews_review\" (\"provider_id\")"
+        },
+        {
+          "seq": 5,
+          "name": "reviews_review_customer_id_17e79eab",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 7,
+              "name": "customer_id"
+            }
+          ],
+          "sql": "CREATE INDEX \"reviews_review_customer_id_17e79eab\" ON \"reviews_review\" (\"customer_id\")"
+        },
+        {
+          "seq": 6,
+          "name": "sqlite_autoindex_reviews_review_1",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0,
+          "columns": [
+            {
+              "seqno": 0,
+              "cid": 8,
+              "name": "order_id"
+            }
+          ],
+          "sql": null
+        }
+      ],
+      "row_count": 7
+    }
+  ],
+  "views": [],
+  "triggers": []
+}

@@ -1,0 +1,33 @@
+flowchart LR
+    C[Customer] --> P1((1. Account & authentication))
+    P[Provider] --> P1
+    A[Administrator] --> P1
+    P1 <--> D1[(User / session / permission stores)]
+    P1 --> D2[(Notifications / audit)]
+    C --> P2((2. Browse & manage marketplace services))
+    P --> P2
+    A --> P2
+    P2 <--> D3[(Categories, managed services, specializations, qualifications)]
+    P2 <--> D4[(Provider services / services)]
+    P --> P3((3. Provider verification & documents))
+    A --> P3
+    P3 <--> D5[(Provider profiles, documents, verification requests)]
+    C --> P4((4. Create and manage orders))
+    P --> P4
+    P4 <--> D6[(Orders, deliveries, milestones, order messages)]
+    P4 --> D2
+    C --> P5((5. Payments and commission review))
+    A --> P5
+    P --> P5
+    P5 <--> D7[(Payments, wallets, provider wallets, commission records)]
+    P5 <--> G[Manual wallet / payment gateway]
+    C --> P6((6. Reviews and conversations))
+    P --> P6
+    P6 <--> D8[(Reviews, conversations, messages)]
+    P6 --> D2
+    A --> P7((7. Dashboard, reports, exports and catalog administration))
+    P7 <--> D1
+    P7 <--> D2
+    P7 <--> D3
+    P7 <--> D5
+    P7 <--> D7
