@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, Count, Max
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotAllowed
 from .models import Conversation, Message
 from .forms import MessageForm
 from apps.accounts.models import User
@@ -74,6 +74,8 @@ def conversation_detail(request, pk):
 @login_required
 def start_conversation(request, user_id):
     """بدء محادثة مع مستخدم آخر"""
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
     other_user = get_object_or_404(User, id=user_id)
     
     # التحقق من أنه ليس نفس المستخدم
@@ -81,6 +83,11 @@ def start_conversation(request, user_id):
         messages.error(request, 'لا يمكنك إنشاء محادثة مع نفسك')
         return redirect('chat:conversation_list')
     
+    # Only a customer/provider pair may have a general conversation.
+    if request.user.is_customer() == other_user.is_customer():
+        messages.error(request, 'المحادثة متاحة فقط بين عميل ومقدم خدمة.')
+        return redirect('chat:conversation_list')
+
     # البحث عن محادثة موجودة
     conversation = Conversation.objects.filter(
         Q(customer=request.user, provider=other_user) |
@@ -90,7 +97,7 @@ def start_conversation(request, user_id):
     # إنشاء محادثة جديدة إذا لم تكن موجودة
     if not conversation:
         # تحديد من هو العميل ومن هو المقدم
-        if request.user.is_customer:
+        if request.user.is_customer():
             conversation = Conversation.objects.create(
                 customer=request.user,
                 provider=other_user

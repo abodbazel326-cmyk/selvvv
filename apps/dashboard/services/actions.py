@@ -87,7 +87,7 @@ def verification_action(request, verification, status, note=''):
     if status in map_action: provider_action(request, verification.provider, map_action[status], note)
     if status == 'approved':
         for managed in verification.requested_services.filter(is_active=True):
-            ProviderService.objects.update_or_create(provider=verification.provider, catalog_service=managed, defaults={'price':0,'is_active':True,'approval_status':'approved'})
+            ProviderService.objects.update_or_create(provider=verification.provider, managed_service=managed, defaults={'is_active':True,'approval_status':'approved'})
     audit(request, 'verification_decision', verification, old={'status':old}, new={'status':status}, reason=note)
     return verification
 
@@ -119,7 +119,7 @@ def service_action(request, obj, action, reason=''):
         if action in {'approve','activate'}:
             if not obj.provider or obj.provider.status != 'active' or obj.provider.verification_status != 'verified':
                 raise ValidationError('لا يمكن اعتماد خدمة مقدم الخدمة قبل توثيق وتفعيل مقدم الخدمة.')
-            if not obj.catalog_service_id or not obj.catalog_service.is_active:
+            if not obj.managed_service_id or not obj.managed_service.is_active:
                 raise ValidationError('يجب ربط اعتماد مقدم الخدمة بخدمة مركزية نشطة قبل اعتماده.')
             obj.approval_status='approved'; obj.is_active=True
         elif action == 'deactivate': obj.is_active=False

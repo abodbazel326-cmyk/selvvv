@@ -24,7 +24,7 @@ def orderable_service_queryset():
         provider__provider_profile__verification_status='verified',
         provider_service__is_active=True,
         provider_service__approval_status__in=['approved', 'active'],
-        provider_service__catalog_service__is_active=True,
+        provider_service__managed_service__is_active=True,
     )
 
 

@@ -32,8 +32,8 @@ EXPORT_MAP = {
     'orders': ('orders.csv', ['order_number','customer__username','provider__username','title','agreed_price','status','payment_status','created_at']),
     'payments': ('payments.csv', ['id','transaction_id','order__order_number','amount','status','commission_amount','provider_net_amount','created_at']),
     'commissions': ('commissions.csv', ['order__order_number','commission_rate','gross_amount','commission_amount','provider_net_amount','created_at']),
-    'reviews': ('reviews.csv', ['id','customer__username','provider__username','service__title','provider_rating','service_rating','is_public','created_at']),
-    'services': ('services.csv', ['id','provider__username','category__name','title','price','status','orders_count','average_rating','created_at']),
+    'reviews': ('reviews.csv', ['id','customer__username','provider__username','provider_rating','service_rating','is_public','created_at']),
+    'services': ('services.csv', ['id','provider__username','provider_service__managed_service__category__name','title','price','status','orders_count','average_rating','created_at']),
 }
 
 def _paginate(request, qs, per_page=PER_PAGE): return Paginator(qs, per_page).get_page(request.GET.get('page'))
@@ -98,9 +98,9 @@ def global_search(request):
                 Q(display_name__icontains=query)
             ).select_related('user', 'location_city')[:10],
             'الخدمات': Service.objects.filter(
-                Q(title__icontains=query) | Q(category__name__icontains=query) |
+                Q(title__icontains=query) | Q(provider_service__managed_service__category__name__icontains=query) |
                 Q(provider__username__icontains=query)
-            ).select_related('provider', 'category')[:10],
+            ).select_related('provider')[:10],
             'الطلبات': Order.objects.filter(
                 Q(order_number__icontains=query) | Q(title__icontains=query) |
                 Q(customer__username__icontains=query) | Q(provider__username__icontains=query)
@@ -117,12 +117,11 @@ def global_search(request):
                 Q(transaction_id__icontains=query) | Q(order__order_number__icontains=query)
             ).select_related('order')[:10],
             'خدمات مقدمي الخدمات': ProviderService.objects.filter(
-                Q(provider__user__username__icontains=query) | Q(service__title__icontains=query) |
-                Q(catalog_service__name__icontains=query)
-            ).select_related('provider__user', 'service', 'catalog_service')[:10],
+                Q(provider__user__username__icontains=query) | Q(managed_service__name__icontains=query)
+            ).select_related('provider__user', 'service', 'managed_service')[:10],
             'الخدمات الأساسية': ManagedService.objects.filter(
-                Q(name__icontains=query) | Q(category__name__icontains=query)
-            ).select_related('category')[:10],
+                Q(name__icontains=query) | Q(provider_service__managed_service__category__name__icontains=query)
+            ).select_related('managed_service__category')[:10],
             'العمولات': CommissionRecord.objects.filter(
                 Q(order__order_number__icontains=query) | Q(order__provider__username__icontains=query)
             ).select_related('order', 'order__provider')[:10],
@@ -235,7 +234,7 @@ def provider_edit(request, pk):
 @dashboard_required
 def provider_detail(request, pk):
     provider=get_object_or_404(ProviderProfile.objects.select_related('user','location_city','location_district').prefetch_related('specializations','qualification_choices','documents__document_type','wallet_accounts__wallet'), pk=pk)
-    ctx={**_common(request,'ملف مقدم الخدمة الإداري'),'provider':provider,'stats':provider_statistics(provider),'services':Service.objects.filter(provider=provider.user).select_related('provider_service__catalog_service','category').annotate(real_orders=Count('orders', distinct=True))[:50],'provider_services':ProviderService.objects.filter(provider=provider).select_related('catalog_service','service')[:50],'orders':Order.objects.filter(provider=provider.user).select_related('customer','service')[:50],'reviews':Review.objects.filter(provider=provider.user).select_related('customer','service','order')[:50],'payments':Payment.objects.filter(order__provider=provider.user).select_related('order','provider_wallet__wallet')[:50],'terms_acceptances':TermsAcceptance.objects.filter(user=provider.user).select_related('terms')[:20],'audits':AuditLog.objects.filter(object_id=str(provider.pk))[:30]}
+    ctx={**_common(request,'ملف مقدم الخدمة الإداري'),'provider':provider,'stats':provider_statistics(provider),'services':Service.objects.filter(provider=provider.user).select_related('provider_service__managed_service__category').annotate(real_orders=Count('orders', distinct=True))[:50],'provider_services':ProviderService.objects.filter(provider=provider).select_related('managed_service')[:50],'orders':Order.objects.filter(provider=provider.user).select_related('customer','service')[:50],'reviews':Review.objects.filter(provider=provider.user).select_related('customer','service','order')[:50],'payments':Payment.objects.filter(order__provider=provider.user).select_related('order','provider_wallet__wallet')[:50],'terms_acceptances':TermsAcceptance.objects.filter(user=provider.user).select_related('terms')[:20],'audits':AuditLog.objects.filter(object_id=str(provider.pk))[:30]}
     return render(request,'dashboard/providers/detail.html',ctx)
 
 @dashboard_required
@@ -301,8 +300,8 @@ def document_download(request, pk):
 def categories_list(request): return manage_model_page(request,'categories','التصنيفات',Category,CategoryForm)
 @dashboard_required
 def services_list(request):
-    qs=Service.objects.select_related('provider','provider__provider_profile','provider_service__catalog_service','category').annotate(real_orders=Count('orders'))
-    qs=_search(qs,request.GET.get('q'),['title','provider__username','provider__email','category__name','provider_service__catalog_service__name'])
+    qs=Service.objects.select_related('provider','provider__provider_profile','provider_service__managed_service__category').annotate(real_orders=Count('orders'))
+    qs=_search(qs,request.GET.get('q'),['title','provider__username','provider__email','provider_service__managed_service__category__name','provider_service__managed_service__name'])
     if request.GET.get('status'): qs=qs.filter(status=request.GET['status'])
     return render(request,'dashboard/services/list.html',{**_common(request,'إدارة الخدمات'),'page_obj':_paginate(request,_sort(qs,request,{'created_at','-created_at','title','-title','status','price','-price'},'-created_at')),'status_choices':Service.STATUS_CHOICES,'form':ServiceForm()})
 @dashboard_required
@@ -322,8 +321,8 @@ def service_action(request, pk, action_name):
 
 @dashboard_required
 def provider_services_list(request):
-    qs=ProviderService.objects.select_related('provider__user','service','catalog_service','catalog_service__category').annotate(commercial_services_count=Count('commercial_services', distinct=True))
-    qs=_search(qs,request.GET.get('q'),['provider__user__username','service__title','catalog_service__name'])
+    qs=ProviderService.objects.select_related('provider__user','managed_service','managed_service__category').annotate(commercial_services_count=Count('commercial_services', distinct=True))
+    qs=_search(qs,request.GET.get('q'),['provider__user__username','managed_service__name'])
     if request.GET.get('status'): qs=qs.filter(approval_status=request.GET['status'])
     return render(request,'dashboard/services/provider_services.html',{**_common(request,'خدمات مقدمي الخدمات'),'page_obj':_paginate(request,qs.order_by('-created_at')),'status_choices':ProviderService.STATUS_CHOICES,'form':ProviderServiceForm()})
 @dashboard_required
@@ -389,7 +388,7 @@ def wallets_list(request): return manage_model_page(request,'wallets','المح�
 @dashboard_required
 def reviews_list(request):
     qs=Review.objects.select_related('customer','provider','service','order')
-    qs=_search(qs,request.GET.get('q'),['comment','customer__username','provider__username','service__title','order__order_number'])
+    qs=_search(qs,request.GET.get('q'),['comment','customer__username','provider__username','order__order_number'])
     if request.GET.get('public') in {'0','1'}: qs=qs.filter(is_public=request.GET['public']=='1')
     return render(request,'dashboard/reviews/list.html',{**_common(request,'إدارة التقييمات'),'page_obj':_paginate(request,qs.order_by('-created_at'))})
 @dashboard_required
@@ -442,13 +441,13 @@ def audit_logs(request):
 
 @dashboard_required
 def reports_view(request, report_type='users'):
-    qs_map={'users':User.objects.all(),'providers':ProviderProfile.objects.select_related('user'),'orders':Order.objects.select_related('customer','provider','service'),'payments':Payment.objects.select_related('order'),'commissions':CommissionRecord.objects.select_related('order'),'services':Service.objects.select_related('provider','category'),'reviews':Review.objects.select_related('customer','provider','service')}
+    qs_map={'users':User.objects.all(),'providers':ProviderProfile.objects.select_related('user'),'orders':Order.objects.select_related('customer','provider','service'),'payments':Payment.objects.select_related('order'),'commissions':CommissionRecord.objects.select_related('order'),'services':Service.objects.select_related('provider','provider_service__managed_service__category'),'reviews':Review.objects.select_related('customer','provider','service')}
     qs=qs_map.get(report_type, User.objects.all()); qs=_date_filter(qs,request)
     return render(request,'dashboard/reports/index.html',{**_common(request,'التقارير'),'report_type':report_type,'page_obj':_paginate(request,qs.order_by('-pk')),'reports':qs_map.keys()})
 
 @dashboard_required
 def export_view(request, kind):
-    qs_map={'users':User.objects.all(),'providers':ProviderProfile.objects.select_related('user'),'orders':Order.objects.select_related('customer','provider','service'),'payments':Payment.objects.select_related('order'),'commissions':CommissionRecord.objects.select_related('order'),'reviews':Review.objects.select_related('customer','provider','service'),'services':Service.objects.select_related('provider','category')}
+    qs_map={'users':User.objects.all(),'providers':ProviderProfile.objects.select_related('user'),'orders':Order.objects.select_related('customer','provider','service'),'payments':Payment.objects.select_related('order'),'commissions':CommissionRecord.objects.select_related('order'),'reviews':Review.objects.select_related('customer','provider','service'),'services':Service.objects.select_related('provider','provider_service__managed_service__category')}
     if kind not in EXPORT_MAP or kind not in qs_map: raise Http404('نوع التصدير غير مدعوم')
     filename, fields=EXPORT_MAP[kind]
     actions.audit(request,'csv_export',None,kind=kind)

@@ -15,10 +15,10 @@ from apps.core.services import audit, notify
 class UserAdmin(BaseUserAdmin):
     list_display = ['username', 'get_full_name', 'email', 'phone', 'role', 'location_city', 'location_district', 'provider_verification_status', 'user_orders_count', 'is_verified', 'is_active', 'created_at']
     list_filter = ['role', 'is_verified', 'is_active', 'created_at']
-    search_fields = ['username', 'first_name', 'last_name', 'email', 'phone', 'city', 'location_city__name', 'location_district__name', 'provider_profile__display_name']
+    search_fields = ['username', 'first_name', 'last_name', 'email', 'phone', 'location_city__name', 'location_district__name', 'provider_profile__display_name']
     ordering = ['-created_at']
-    fieldsets = BaseUserAdmin.fieldsets + (('معلومات إضافية', {'fields': ('role', 'phone', 'location_city', 'location_district', 'city', 'is_verified')}),)
-    add_fieldsets = BaseUserAdmin.add_fieldsets + (('معلومات إضافية', {'fields': ('email', 'role', 'phone', 'location_city', 'location_district', 'city', 'is_verified')}),)
+    fieldsets = BaseUserAdmin.fieldsets + (('معلومات إضافية', {'fields': ('role', 'phone', 'location_city', 'location_district', 'is_verified')}),)
+    add_fieldsets = BaseUserAdmin.add_fieldsets + (('معلومات إضافية', {'fields': ('email', 'role', 'phone', 'location_city', 'location_district', 'is_verified')}),)
 
     def provider_verification_status(self, obj):
         return getattr(getattr(obj, 'provider_profile', None), 'get_verification_status_display', lambda: '-')()
@@ -48,18 +48,18 @@ class ProviderDocumentInline(admin.TabularInline):
 
 @admin.register(ProviderProfile)
 class ProviderProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'display_name', 'specialization', 'city', 'district', 'verification_status', 'status', 'is_available', 'created_at']
+    list_display = ['user', 'display_name', 'location_city', 'location_district', 'verification_status', 'status', 'is_available', 'created_at']
     list_filter = ['status', 'verification_status', 'is_available', 'location_city', 'location_district', 'specializations', 'qualification_choices', 'created_at']
-    search_fields = ['user__username', 'user__email', 'user__phone', 'display_name', 'phone', 'email', 'city', 'district', 'specialization', 'bio', 'qualifications', 'experience']
+    search_fields = ['user__username', 'user__email', 'user__phone', 'display_name', 'bio', 'qualification_notes', 'experience']
     readonly_fields = ['total_orders', 'completed_orders', 'average_rating', 'created_at', 'updated_at', 'verified_at', 'map_preview', 'performance_summary']
     ordering = ['-average_rating', '-completed_orders']
     inlines = [ProviderDocumentInline]
     filter_horizontal = ['specializations', 'qualification_choices']
     fieldsets = (
         ('المستخدم والحالة', {'fields': ('user', 'status', 'verification_status', 'verified_by', 'verified_at', 'admin_notes')}),
-        ('المعلومات الأساسية', {'fields': ('display_name', 'phone', 'email', 'bio', 'profile_image')}),
-        ('معلومات النشاط/المهنة', {'fields': ('specializations', 'qualification_choices', 'specialization', 'experience_years', 'hourly_rate', 'qualifications', 'experience', 'is_available', 'availability', 'service_radius')}),
-        ('الموقع الجغرافي', {'fields': ('address', 'location_city', 'location_district', 'city', 'district', 'latitude', 'longitude', 'map_preview')}),
+        ('المعلومات الأساسية', {'fields': ('display_name', 'bio', 'profile_image')}),
+        ('معلومات النشاط/المهنة', {'fields': ('specializations', 'qualification_choices', 'qualification_notes', 'experience_years', 'hourly_rate', 'experience', 'is_available', 'availability', 'service_radius')}),
+        ('الموقع الجغرافي', {'fields': ('address', 'location_city', 'location_district', 'latitude', 'longitude', 'map_preview')}),
         ('الإحصائيات', {'fields': ('total_orders', 'completed_orders', 'average_rating', 'performance_summary'), 'classes': ('collapse',)}),
         ('التواريخ', {'fields': ('created_at', 'updated_at'), 'classes': ('collapse',)}),
     )
@@ -190,7 +190,7 @@ class ProviderVerificationRequestAdmin(admin.ModelAdmin):
         if verification.status == 'approved':
             from apps.marketplace.models import ProviderService
             for service in verification.requested_services.filter(is_active=True):
-                ProviderService.objects.update_or_create(provider=profile, catalog_service=service, defaults={'price':0, 'is_active':True, 'approval_status':'approved'})
+                ProviderService.objects.update_or_create(provider=profile, managed_service=service, defaults={'is_active':True, 'approval_status':'approved'})
             profile.status='active'; profile.verification_status='verified'; profile.verified_by=request.user; profile.verified_at=timezone.now(); profile.admin_notes=verification.admin_note; profile.save()
         elif verification.status in {'rejected','needs_documents'}:
             profile.status='inactive'; profile.verification_status=verification.status; profile.admin_notes=verification.admin_note; profile.save()

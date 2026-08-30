@@ -59,7 +59,7 @@ class ManagerForm(DashboardModelForm):
 class ProviderAdminForm(DashboardModelForm):
     class Meta:
         model = ProviderProfile
-        fields = ['display_name','phone','email','bio','experience','experience_years','hourly_rate','address','location_city','location_district','latitude','longitude','status','verification_status','is_available','specializations','qualification_choices','admin_notes']
+        fields = ['display_name','bio','experience','experience_years','hourly_rate','address','location_city','location_district','latitude','longitude','status','verification_status','is_available','specializations','qualification_choices','admin_notes']
         widgets = {'bio': forms.Textarea(attrs={'rows': 3}), 'experience': forms.Textarea(attrs={'rows': 3}), 'admin_notes': forms.Textarea(attrs={'rows': 3})}
 
 class ReasonActionForm(forms.Form):
@@ -83,37 +83,23 @@ class CategoryForm(DashboardModelForm):
 class ServiceForm(DashboardModelForm):
     provider_service = forms.ModelChoiceField(
         label='الخدمة المركزية المعتمدة',
-        queryset=ProviderService.objects.filter(
-            catalog_service__isnull=False,
-            catalog_service__is_active=True,
-            is_active=True,
-            approval_status__in=['approved', 'active'],
-        ).select_related('provider__user', 'catalog_service__category').order_by('catalog_service__name'),
-        required=False,
-        empty_label='اختر اعتماد الخدمة المركزية',
-        widget=forms.Select(attrs={'class': 'form-select'}),
+        queryset=ProviderService.objects.filter(managed_service__is_active=True, is_active=True, approval_status__in=['approved', 'active']).select_related('provider__user', 'managed_service__category').order_by('managed_service__name'),
+        required=False, empty_label='اختر اعتماد الخدمة المركزية', widget=forms.Select(attrs={'class': 'form-select'}),
     )
-
     class Meta:
         model = Service
-        fields = ['provider','provider_service','category','title','description','price_type','currency','price','delivery_time','image','status','is_featured']
-        widgets = {'category': forms.Select(attrs={'class': 'form-select'})}
-
+        fields = ['provider','provider_service','title','description','price_type','currency','price','delivery_time','image','status','is_featured']
     def clean(self):
         data = super().clean()
         approval = data.get('provider_service')
         if not approval and not self.instance.pk:
             self.add_error('provider_service', 'يجب اختيار اعتماد خدمة مركزية محددة.')
-            return data
-        if approval:
-            provider = data.get('provider')
-            if provider and approval.provider.user_id != provider.pk:
-                self.add_error('provider_service', 'اعتماد الخدمة لا يخص مقدم الخدمة المحدد.')
-            if approval.catalog_service.category_id:
-                data['category'] = approval.catalog_service.category
+        elif approval and data.get('provider') and approval.provider.user_id != data['provider'].pk:
+            self.add_error('provider_service', 'اعتماد الخدمة لا يخص مقدم الخدمة المحدد.')
         return data
+
 class ProviderServiceForm(DashboardModelForm):
-    class Meta: model = ProviderService; fields = ['provider','service','catalog_service','description','price','price_type','estimated_duration','is_active','approval_status']
+    class Meta: model = ProviderService; fields = ['provider','managed_service','is_active','approval_status']
 class OrderStatusForm(forms.Form):
     status = forms.ChoiceField(label='الحالة الجديدة', choices=Order.STATUS_CHOICES, widget=forms.Select(attrs={'class':'form-select'}))
     reason = forms.CharField(label='سبب التغيير', widget=forms.Textarea(attrs={'class':'form-control','rows':3}))

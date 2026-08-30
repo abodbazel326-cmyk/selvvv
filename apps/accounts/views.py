@@ -138,12 +138,6 @@ def _save_provider_forms(request, profile, include_wallets=False):
             user = user_form.save()
             provider = provider_form.save(commit=False)
             provider.user = request.user
-            # Account and professional contact details are intentionally independent.
-            # Keep legacy location text fields synchronized with the canonical location FKs.
-            if provider.location_city_id:
-                provider.city = provider.location_city.name
-            if provider.location_district_id:
-                provider.district = provider.location_district.name
             provider.save()
             provider_form.save_m2m()
             if include_wallets:
@@ -176,11 +170,11 @@ def provider_profile_edit_view(request):
         provider_form = ProviderProfileForm(instance=profile, prefix='provider')
 
     approved_provider_services = profile.provider_services.filter(
-        catalog_service__isnull=False,
-        catalog_service__is_active=True,
+        managed_service__isnull=False,
+        managed_service__is_active=True,
         approval_status__in=['approved', 'active'],
         is_active=True,
-    ).select_related('catalog_service', 'catalog_service__category').order_by('catalog_service__name')
+    ).select_related('managed_service', 'managed_service__category').order_by('managed_service__name')
     return render(request, 'accounts/provider_profile_edit.html', {
         'user_form': user_form,
         'provider_form': provider_form,
@@ -350,7 +344,7 @@ class ProviderDetailView(DetailView):
         provider = self.get_object()
         
         profile = services.get_provider_profile(provider)
-        active_services = provider.services.filter(status='active').select_related('category').annotate(completed_orders_real=Count('orders', filter=Q(orders__status='completed'), distinct=True))
+        active_services = provider.services.filter(status='active').select_related('provider_service__managed_service__category').annotate(completed_orders_real=Count('orders', filter=Q(orders__status='completed'), distinct=True))
         public_reviews = provider.reviews_received.filter(is_public=True).select_related('customer', 'service').order_by('-created_at')
         rating_stats = public_reviews.aggregate(avg=Avg('provider_rating'), count=Count('id'))
         completed_orders = provider.orders_as_provider.filter(status='completed').count()
@@ -430,7 +424,7 @@ def _initial_requested_services(profile):
     latest_request = profile.verification_requests.order_by('-created_at').first()
     if latest_request and latest_request.requested_services.exists():
         return latest_request.requested_services.all()
-    return [ps.catalog_service for ps in profile.provider_services.filter(catalog_service__isnull=False).select_related('catalog_service') if ps.catalog_service_id]
+    return [ps.managed_service for ps in profile.provider_services.filter(managed_service__isnull=False).select_related('managed_service') if ps.managed_service_id]
 
 @login_required
 def provider_documents_view(request):
@@ -496,11 +490,11 @@ def _validate_and_submit_verification(request, profile):
     }
     labels = [label for key, label in missing.items() if not checklist.get(key)]
 
+    if labels:
+        return False, 'لا يمكن إرسال الطلب قبل استكمال: ' + '، '.join(labels) + '.', verification_form
     _create_or_update_verification_request(
         request, profile, verification_form.cleaned_data.get('requested_services') or []
     )
-    if labels:
-        return True, 'تم إرسال الملف للمراجعة. البيانات غير المكتملة حاليًا: ' + '، '.join(labels) + '. يمكنك استكمالها لاحقًا.', verification_form
     return True, 'تم إرسال ملفك للمراجعة، وأصبح الطلب ظاهرًا لدى الإدارة.', verification_form
 
 

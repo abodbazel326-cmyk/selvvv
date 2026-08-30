@@ -197,6 +197,13 @@ class Order(models.Model):
         
         super().save(*args, **kwargs)
     
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.service_id and self.provider_id and self.service.provider_id != self.provider_id:
+            raise ValidationError({'provider': 'مقدم الخدمة يجب أن يطابق مالك الخدمة.'})
+        if self.customer_id and self.provider_id and self.customer_id == self.provider_id:
+            raise ValidationError({'customer': 'لا يمكن إنشاء طلب للخدمة الذاتية.'})
+
     def get_absolute_url(self):
         """رابط صفحة الطلب"""
         return reverse('orders:order_detail', kwargs={'order_number': self.order_number})
