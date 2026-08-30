@@ -1,0 +1,110 @@
+flowchart LR
+    classDef table fill:#e8f1ff,stroke:#2563eb,color:#0f172a,stroke-width:1px
+    classDef infra fill:#f1f5f9,stroke:#64748b,color:#0f172a
+    accounts_providerdocument["<b>accounts_providerdocument</b><br/>rows=23<br/>🔑 id : INTEGER<br/>status : varchar(40)<br/>reviewed_at : datetime<br/>review_note : TEXT<br/>created_at : datetime<br/>updated_at : datetime<br/>🔗 document_type_id : bigint<br/>🔗 provider_id : bigint<br/>🔗 reviewed_by_id : bigint<br/>file : varchar(100)"]
+    accounts_providerdocumenttype["<b>accounts_providerdocumenttype</b><br/>rows=10<br/>🔑 id : INTEGER<br/>code : varchar(50)<br/>name : varchar(120)<br/>is_required : bool<br/>is_active : bool<br/>created_at : datetime"]
+    accounts_providerprofile["<b>accounts_providerprofile</b><br/>rows=24<br/>🔑 id : INTEGER<br/>bio : TEXT<br/>profile_image : varchar(100)<br/>specialization : varchar(100)<br/>experience_years : integer unsigned<br/>hourly_rate : decimal<br/>address : TEXT<br/>latitude : decimal<br/>longitude : decimal<br/>total_orders : integer unsigned<br/>completed_orders : integer unsigned<br/>average_rating : decimal<br/>is_available : bool<br/>created_at : datetime<br/>updated_at : datetime<br/>🔗 user_id : bigint<br/>admin_notes : TEXT<br/>availability : varchar(120)<br/>city : varchar(100)<br/>display_name : varchar(150)<br/>district : varchar(100)<br/>email : varchar(254)<br/>experience : TEXT<br/>phone : varchar(20)<br/>qualifications : TEXT<br/>service_radius : integer unsigned<br/>verification_status : varchar(30)<br/>verified_at : datetime<br/>🔗 verified_by_id : bigint<br/>status : varchar(20)<br/>🔗 location_city_id : bigint<br/>🔗 location_district_id : bigint"]
+    accounts_providerprofile_qualification_choices["<b>accounts_providerprofile_qualification_choices</b><br/>rows=7<br/>🔑 id : INTEGER<br/>🔗 providerprofile_id : bigint<br/>🔗 qualification_id : bigint"]
+    accounts_providerprofile_specializations["<b>accounts_providerprofile_specializations</b><br/>rows=7<br/>🔑 id : INTEGER<br/>🔗 providerprofile_id : bigint<br/>🔗 specialization_id : bigint"]
+    accounts_providerverificationrequest["<b>accounts_providerverificationrequest</b><br/>rows=7<br/>🔑 id : INTEGER<br/>status : varchar(30)<br/>admin_note : TEXT<br/>reviewed_at : datetime<br/>created_at : datetime<br/>updated_at : datetime<br/>🔗 provider_id : bigint<br/>🔗 reviewed_by_id : bigint<br/>profile_snapshot : TEXT<br/>submitted_at : datetime"]
+    accounts_providerverificationrequest_documents["<b>accounts_providerverificationrequest_documents</b><br/>rows=12<br/>🔑 id : INTEGER<br/>🔗 providerverificationrequest_id : bigint<br/>🔗 providerdocument_id : bigint"]
+    accounts_providerverificationrequest_requested_services["<b>accounts_providerverificationrequest_requested_services</b><br/>rows=5<br/>🔑 id : INTEGER<br/>🔗 providerverificationrequest_id : bigint<br/>🔗 managedservice_id : bigint"]
+    accounts_user["<b>accounts_user</b><br/>rows=28<br/>🔑 id : INTEGER<br/>password : varchar(128)<br/>last_login : datetime<br/>is_superuser : bool<br/>username : varchar(150)<br/>first_name : varchar(150)<br/>last_name : varchar(150)<br/>is_staff : bool<br/>date_joined : datetime<br/>email : varchar(254)<br/>role : varchar(20)<br/>city : varchar(100)<br/>is_verified : bool<br/>is_active : bool<br/>created_at : datetime<br/>updated_at : datetime<br/>phone : varchar(20)<br/>🔗 location_city_id : bigint<br/>🔗 location_district_id : bigint"]
+    accounts_user_groups["<b>accounts_user_groups</b><br/>rows=0<br/>🔑 id : INTEGER<br/>🔗 user_id : bigint<br/>🔗 group_id : INTEGER"]
+    accounts_user_user_permissions["<b>accounts_user_user_permissions</b><br/>rows=0<br/>🔑 id : INTEGER<br/>🔗 user_id : bigint<br/>🔗 permission_id : INTEGER"]
+    auth_group["<b>auth_group</b><br/>rows=0<br/>🔑 id : INTEGER<br/>name : varchar(150)"]
+    auth_group_permissions["<b>auth_group_permissions</b><br/>rows=0<br/>🔑 id : INTEGER<br/>🔗 group_id : INTEGER<br/>🔗 permission_id : INTEGER"]
+    auth_permission["<b>auth_permission</b><br/>rows=150<br/>🔑 id : INTEGER<br/>🔗 content_type_id : INTEGER<br/>codename : varchar(100)<br/>name : varchar(255)"]
+    chat_conversation["<b>chat_conversation</b><br/>rows=3<br/>🔑 id : INTEGER<br/>created_at : datetime<br/>updated_at : datetime<br/>🔗 customer_id : bigint<br/>🔗 provider_id : bigint<br/>🔗 service_id : bigint"]
+    chat_message["<b>chat_message</b><br/>rows=5<br/>🔑 id : INTEGER<br/>content : TEXT<br/>is_read : bool<br/>created_at : datetime<br/>🔗 conversation_id : bigint<br/>🔗 sender_id : bigint"]
+    core_auditlog["<b>core_auditlog</b><br/>rows=64<br/>🔑 id : INTEGER<br/>action : varchar(100)<br/>object_id : varchar(64)<br/>metadata : TEXT<br/>created_at : datetime<br/>🔗 actor_id : bigint<br/>🔗 content_type_id : INTEGER"]
+    core_city["<b>core_city</b><br/>rows=22<br/>🔑 id : INTEGER<br/>name : varchar(100)<br/>is_active : bool<br/>order : integer unsigned<br/>created_at : datetime<br/>updated_at : datetime"]
+    core_district["<b>core_district</b><br/>rows=324<br/>🔑 id : INTEGER<br/>name : varchar(100)<br/>is_active : bool<br/>order : integer unsigned<br/>created_at : datetime<br/>updated_at : datetime<br/>🔗 city_id : bigint"]
+    core_notification["<b>core_notification</b><br/>rows=67<br/>🔑 id : INTEGER<br/>event_type : varchar(40)<br/>title : varchar(200)<br/>message : TEXT<br/>is_read : bool<br/>created_at : datetime<br/>🔗 recipient_id : bigint"]
+    core_platformsetting["<b>core_platformsetting</b><br/>rows=0<br/>🔑 id : INTEGER<br/>key : varchar(100)<br/>value : varchar(500)<br/>description : TEXT<br/>updated_at : datetime"]
+    core_termsacceptance["<b>core_termsacceptance</b><br/>rows=10<br/>🔑 id : INTEGER<br/>commission_rate : decimal<br/>accepted_at : datetime<br/>ip_address : char(39)<br/>🔗 terms_id : bigint<br/>🔗 user_id : bigint"]
+    core_termsandconditions["<b>core_termsandconditions</b><br/>rows=2<br/>🔑 id : INTEGER<br/>version : varchar(30)<br/>content : TEXT<br/>commission_rate : decimal<br/>is_active : bool<br/>published_at : datetime<br/>created_at : datetime"]
+    django_admin_log["<b>django_admin_log</b><br/>rows=145<br/>🔑 id : INTEGER<br/>object_id : TEXT<br/>object_repr : varchar(200)<br/>action_flag : smallint unsigned<br/>change_message : TEXT<br/>🔗 content_type_id : INTEGER<br/>🔗 user_id : bigint<br/>action_time : datetime"]
+    django_content_type["<b>django_content_type</b><br/>rows=36<br/>🔑 id : INTEGER<br/>app_label : varchar(100)<br/>model : varchar(100)"]
+    django_migrations["<b>django_migrations</b><br/>rows=50<br/>🔑 id : INTEGER<br/>app : varchar(255)<br/>name : varchar(255)<br/>applied : datetime"]
+    django_session["<b>django_session</b><br/>rows=40<br/>🔑 session_key : varchar(40)<br/>session_data : TEXT<br/>expire_date : datetime"]
+    marketplace_category["<b>marketplace_category</b><br/>rows=24<br/>🔑 id : INTEGER<br/>name : varchar(100)<br/>description : TEXT<br/>icon : varchar(50)<br/>is_active : bool<br/>order : INTEGER<br/>created_at : datetime<br/>updated_at : datetime<br/>image : varchar(100)<br/>slug : varchar(120)<br/>🔗 parent_id : bigint"]
+    marketplace_managedservice["<b>marketplace_managedservice</b><br/>rows=7<br/>🔑 id : INTEGER<br/>name : varchar(120)<br/>is_active : bool<br/>order : integer unsigned<br/>created_at : datetime<br/>updated_at : datetime<br/>description : TEXT<br/>🔗 category_id : bigint"]
+    marketplace_providerservice["<b>marketplace_providerservice</b><br/>rows=4<br/>🔑 id : INTEGER<br/>description : TEXT<br/>price : decimal<br/>price_type : varchar(20)<br/>estimated_duration : integer unsigned<br/>is_active : bool<br/>created_at : datetime<br/>updated_at : datetime<br/>🔗 provider_id : bigint<br/>🔗 service_id : bigint<br/>approval_status : varchar(20)<br/>🔗 catalog_service_id : bigint"]
+    marketplace_qualification["<b>marketplace_qualification</b><br/>rows=7<br/>🔑 id : INTEGER<br/>name : varchar(120)<br/>is_active : bool<br/>order : integer unsigned<br/>created_at : datetime<br/>updated_at : datetime"]
+    marketplace_service["<b>marketplace_service</b><br/>rows=15<br/>🔑 id : INTEGER<br/>title : varchar(200)<br/>description : TEXT<br/>price_type : varchar(20)<br/>price : decimal<br/>delivery_time : INTEGER<br/>image : varchar(100)<br/>status : varchar(20)<br/>views_count : INTEGER<br/>orders_count : INTEGER<br/>average_rating : decimal<br/>is_featured : bool<br/>created_at : datetime<br/>updated_at : datetime<br/>🔗 category_id : bigint<br/>🔗 provider_id : bigint<br/>currency : varchar(3)<br/>🔗 provider_service_id : bigint"]
+    marketplace_specialization["<b>marketplace_specialization</b><br/>rows=45<br/>🔑 id : INTEGER<br/>name : varchar(120)<br/>is_active : bool<br/>order : integer unsigned<br/>created_at : datetime<br/>updated_at : datetime"]
+    orders_delivery["<b>orders_delivery</b><br/>rows=6<br/>🔑 id : INTEGER<br/>file : varchar(100)<br/>description : TEXT<br/>delivered_at : datetime<br/>is_accepted : bool<br/>reviewed_at : datetime<br/>review_note : TEXT<br/>🔗 order_id : bigint"]
+    orders_milestone["<b>orders_milestone</b><br/>rows=0<br/>🔑 id : INTEGER<br/>title : varchar(200)<br/>description : TEXT<br/>percentage : INTEGER<br/>is_completed : bool<br/>completed_at : datetime<br/>order_index : INTEGER<br/>created_at : datetime<br/>🔗 order_id : bigint"]
+    orders_order["<b>orders_order</b><br/>rows=10<br/>🔑 id : INTEGER<br/>order_number : varchar(50)<br/>title : varchar(200)<br/>description : TEXT<br/>agreed_price : decimal<br/>delivery_days : INTEGER<br/>expected_delivery_date : date<br/>status : varchar(20)<br/>payment_status : varchar(20)<br/>created_at : datetime<br/>accepted_at : datetime<br/>started_at : datetime<br/>delivered_at : datetime<br/>completed_at : datetime<br/>cancelled_at : datetime<br/>cancellation_reason : TEXT<br/>🔗 customer_id : bigint<br/>🔗 provider_id : bigint<br/>🔗 service_id : bigint<br/>commission_amount : decimal<br/>commission_rate : decimal<br/>currency : varchar(3)<br/>dispute_reason : TEXT<br/>provider_net_amount : decimal"]
+    orders_ordermessage["<b>orders_ordermessage</b><br/>rows=3<br/>🔑 id : INTEGER<br/>message : TEXT<br/>created_at : datetime<br/>is_read : bool<br/>🔗 order_id : bigint<br/>🔗 sender_id : bigint"]
+    payments_commissionrecord["<b>payments_commissionrecord</b><br/>rows=7<br/>🔑 id : INTEGER<br/>commission_rate : decimal<br/>gross_amount : decimal<br/>commission_amount : decimal<br/>provider_net_amount : decimal<br/>currency : varchar(3)<br/>created_at : datetime<br/>🔗 order_id : bigint<br/>🔗 payment_id : bigint"]
+    payments_payment["<b>payments_payment</b><br/>rows=8<br/>🔑 id : INTEGER<br/>amount : decimal<br/>currency : varchar(3)<br/>status : varchar(20)<br/>transaction_id : varchar(120)<br/>gateway : varchar(80)<br/>paid_at : datetime<br/>created_at : datetime<br/>updated_at : datetime<br/>🔗 order_id : bigint<br/>commission_amount : decimal<br/>commission_rate : decimal<br/>proof_file : varchar(100)<br/>proof_uploaded_at : datetime<br/>provider_net_amount : decimal<br/>provider_wallet_account_snapshot : varchar(30)<br/>review_note : TEXT<br/>reviewed_at : datetime<br/>🔗 reviewed_by_id : bigint<br/>payment_method : varchar(50)<br/>🔗 provider_wallet_id : bigint"]
+    payments_providerwallet["<b>payments_providerwallet</b><br/>rows=28<br/>🔑 id : INTEGER<br/>account_number : varchar(30)<br/>is_active : bool<br/>created_at : datetime<br/>updated_at : datetime<br/>🔗 provider_id : bigint<br/>🔗 wallet_id : bigint"]
+    payments_wallet["<b>payments_wallet</b><br/>rows=4<br/>🔑 id : INTEGER<br/>name : varchar(80)<br/>code : varchar(50)<br/>color : varchar(20)<br/>is_active : bool<br/>display_order : integer unsigned<br/>created_at : datetime<br/>updated_at : datetime"]
+    reviews_review["<b>reviews_review</b><br/>rows=7<br/>🔑 id : INTEGER<br/>service_rating : INTEGER<br/>provider_rating : INTEGER<br/>comment : TEXT<br/>is_public : bool<br/>created_at : datetime<br/>updated_at : datetime<br/>🔗 customer_id : bigint<br/>🔗 order_id : bigint<br/>🔗 provider_id : bigint<br/>🔗 service_id : bigint"]
+    accounts_providerdocument -->|reviewed_by_id| accounts_user
+    accounts_providerdocument -->|provider_id| accounts_providerprofile
+    accounts_providerdocument -->|document_type_id| accounts_providerdocumenttype
+    accounts_providerprofile -->|location_district_id| core_district
+    accounts_providerprofile -->|location_city_id| core_city
+    accounts_providerprofile -->|verified_by_id| accounts_user
+    accounts_providerprofile -->|user_id| accounts_user
+    accounts_providerprofile_qualification_choices -->|qualification_id| marketplace_qualification
+    accounts_providerprofile_qualification_choices -->|providerprofile_id| accounts_providerprofile
+    accounts_providerprofile_specializations -->|specialization_id| marketplace_specialization
+    accounts_providerprofile_specializations -->|providerprofile_id| accounts_providerprofile
+    accounts_providerverificationrequest -->|reviewed_by_id| accounts_user
+    accounts_providerverificationrequest -->|provider_id| accounts_providerprofile
+    accounts_providerverificationrequest_documents -->|providerdocument_id| accounts_providerdocument
+    accounts_providerverificationrequest_documents -->|providerverificationrequest_id| accounts_providerverificationrequest
+    accounts_providerverificationrequest_requested_services -->|managedservice_id| marketplace_managedservice
+    accounts_providerverificationrequest_requested_services -->|providerverificationrequest_id| accounts_providerverificationrequest
+    accounts_user -->|location_district_id| core_district
+    accounts_user -->|location_city_id| core_city
+    accounts_user_groups -->|group_id| auth_group
+    accounts_user_groups -->|user_id| accounts_user
+    accounts_user_user_permissions -->|permission_id| auth_permission
+    accounts_user_user_permissions -->|user_id| accounts_user
+    auth_group_permissions -->|permission_id| auth_permission
+    auth_group_permissions -->|group_id| auth_group
+    auth_permission -->|content_type_id| django_content_type
+    chat_conversation -->|service_id| marketplace_service
+    chat_conversation -->|provider_id| accounts_user
+    chat_conversation -->|customer_id| accounts_user
+    chat_message -->|sender_id| accounts_user
+    chat_message -->|conversation_id| chat_conversation
+    core_auditlog -->|content_type_id| django_content_type
+    core_auditlog -->|actor_id| accounts_user
+    core_district -->|city_id| core_city
+    core_notification -->|recipient_id| accounts_user
+    core_termsacceptance -->|user_id| accounts_user
+    core_termsacceptance -->|terms_id| core_termsandconditions
+    django_admin_log -->|user_id| accounts_user
+    django_admin_log -->|content_type_id| django_content_type
+    marketplace_category -->|parent_id| marketplace_category
+    marketplace_managedservice -->|category_id| marketplace_category
+    marketplace_providerservice -->|catalog_service_id| marketplace_managedservice
+    marketplace_providerservice -->|service_id| marketplace_service
+    marketplace_providerservice -->|provider_id| accounts_providerprofile
+    marketplace_service -->|provider_service_id| marketplace_providerservice
+    marketplace_service -->|provider_id| accounts_user
+    marketplace_service -->|category_id| marketplace_category
+    orders_delivery -->|order_id| orders_order
+    orders_milestone -->|order_id| orders_order
+    orders_order -->|service_id| marketplace_service
+    orders_order -->|provider_id| accounts_user
+    orders_order -->|customer_id| accounts_user
+    orders_ordermessage -->|sender_id| accounts_user
+    orders_ordermessage -->|order_id| orders_order
+    payments_commissionrecord -->|payment_id| payments_payment
+    payments_commissionrecord -->|order_id| orders_order
+    payments_payment -->|provider_wallet_id| payments_providerwallet
+    payments_payment -->|reviewed_by_id| accounts_user
+    payments_payment -->|order_id| orders_order
+    payments_providerwallet -->|wallet_id| payments_wallet
+    payments_providerwallet -->|provider_id| accounts_providerprofile
+    reviews_review -->|service_id| marketplace_service
+    reviews_review -->|provider_id| accounts_user
+    reviews_review -->|order_id| orders_order
+    reviews_review -->|customer_id| accounts_user

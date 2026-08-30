@@ -1,0 +1,9 @@
+flowchart LR
+    C[Customer] -->|registration, login, search, order requests, messages, reviews| S((selvvv marketplace system))
+    P[Provider] -->|profile, services, documents, verification, order updates, messages| S
+    A[Administrator] -->|catalog management, verification review, payment review, audit/report queries| S
+    S -->|service listings, order status, notifications, chat, payment/review results| C
+    S -->|customer orders, notifications, verification decisions, payment status| P
+    S -->|dashboards, reports, audit records, management results| A
+    G[Manual wallet / payment gateway] -->|payment status or payment reference| S
+    S -->|payment request / proof for review| G

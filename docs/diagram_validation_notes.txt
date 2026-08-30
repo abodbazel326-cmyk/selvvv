@@ -1,0 +1,14 @@
+Visual validation checkpoint 1:
+- 01_erd_full.png rendered successfully at 3120x1848.
+- It contains all database entities and relationship edges, but because it is a complete 42-table/full-column ERD, labels are dense at whole-image scale. This is acceptable for the requested high-resolution/report artifact; the quick schema overview is provided separately for readability.
+- No clipping or rendering failure was observed.
+
+Visual validation checkpoint 2:
+- 04_dfd_level1.png rendered successfully at 3120x6488.
+- Processes, external entities, data stores, and directed flows are visible without clipping. The tall layout preserves readable labels and separates the major workflows.
+- No obvious fatal rendering defect was observed.
+
+Visual validation checkpoint 3:
+- 02_class_diagram.png was regenerated at 3120x2564 and now includes 29 domain and supporting classes represented by the database-backed application models.
+- Official foreign keys are marked with <<FK>>; transaction_id is not marked as an FK because SQLite does not declare it as one.
+- Relationships render without clipping; the diagram is intentionally a focused class view while the full ERD preserves every database table.

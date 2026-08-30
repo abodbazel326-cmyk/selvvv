@@ -1,0 +1,108 @@
+accounts_providerdocument|rows=23|id:INTEGER PK;status:varchar(40);reviewed_at:datetime;review_note:TEXT;created_at:datetime;updated_at:datetime;document_type_id:bigint;provider_id:bigint;reviewed_by_id:bigint;file:varchar(100)
+accounts_providerdocumenttype|rows=10|id:INTEGER PK;code:varchar(50);name:varchar(120);is_required:bool;is_active:bool;created_at:datetime
+accounts_providerprofile|rows=24|id:INTEGER PK;bio:TEXT;profile_image:varchar(100);specialization:varchar(100);experience_years:integer unsigned;hourly_rate:decimal;address:TEXT;latitude:decimal;longitude:decimal;total_orders:integer unsigned;completed_orders:integer unsigned;average_rating:decimal;is_available:bool;created_at:datetime;updated_at:datetime;user_id:bigint;admin_notes:TEXT;availability:varchar(120);city:varchar(100);display_name:varchar(150);district:varchar(100);email:varchar(254);experience:TEXT;phone:varchar(20);qualifications:TEXT;service_radius:integer unsigned;verification_status:varchar(30);verified_at:datetime;verified_by_id:bigint;status:varchar(20);location_city_id:bigint;location_district_id:bigint
+accounts_providerprofile_qualification_choices|rows=7|id:INTEGER PK;providerprofile_id:bigint;qualification_id:bigint
+accounts_providerprofile_specializations|rows=7|id:INTEGER PK;providerprofile_id:bigint;specialization_id:bigint
+accounts_providerverificationrequest|rows=7|id:INTEGER PK;status:varchar(30);admin_note:TEXT;reviewed_at:datetime;created_at:datetime;updated_at:datetime;provider_id:bigint;reviewed_by_id:bigint;profile_snapshot:TEXT;submitted_at:datetime
+accounts_providerverificationrequest_documents|rows=12|id:INTEGER PK;providerverificationrequest_id:bigint;providerdocument_id:bigint
+accounts_providerverificationrequest_requested_services|rows=5|id:INTEGER PK;providerverificationrequest_id:bigint;managedservice_id:bigint
+accounts_user|rows=28|id:INTEGER PK;password:varchar(128);last_login:datetime;is_superuser:bool;username:varchar(150);first_name:varchar(150);last_name:varchar(150);is_staff:bool;date_joined:datetime;email:varchar(254);role:varchar(20);city:varchar(100);is_verified:bool;is_active:bool;created_at:datetime;updated_at:datetime;phone:varchar(20);location_city_id:bigint;location_district_id:bigint
+accounts_user_groups|rows=0|id:INTEGER PK;user_id:bigint;group_id:INTEGER
+accounts_user_user_permissions|rows=0|id:INTEGER PK;user_id:bigint;permission_id:INTEGER
+auth_group|rows=0|id:INTEGER PK;name:varchar(150)
+auth_group_permissions|rows=0|id:INTEGER PK;group_id:INTEGER;permission_id:INTEGER
+auth_permission|rows=150|id:INTEGER PK;content_type_id:INTEGER;codename:varchar(100);name:varchar(255)
+chat_conversation|rows=3|id:INTEGER PK;created_at:datetime;updated_at:datetime;customer_id:bigint;provider_id:bigint;service_id:bigint
+chat_message|rows=5|id:INTEGER PK;content:TEXT;is_read:bool;created_at:datetime;conversation_id:bigint;sender_id:bigint
+core_auditlog|rows=64|id:INTEGER PK;action:varchar(100);object_id:varchar(64);metadata:TEXT;created_at:datetime;actor_id:bigint;content_type_id:INTEGER
+core_city|rows=22|id:INTEGER PK;name:varchar(100);is_active:bool;order:integer unsigned;created_at:datetime;updated_at:datetime
+core_district|rows=324|id:INTEGER PK;name:varchar(100);is_active:bool;order:integer unsigned;created_at:datetime;updated_at:datetime;city_id:bigint
+core_notification|rows=67|id:INTEGER PK;event_type:varchar(40);title:varchar(200);message:TEXT;is_read:bool;created_at:datetime;recipient_id:bigint
+core_platformsetting|rows=0|id:INTEGER PK;key:varchar(100);value:varchar(500);description:TEXT;updated_at:datetime
+core_termsacceptance|rows=10|id:INTEGER PK;commission_rate:decimal;accepted_at:datetime;ip_address:char(39);terms_id:bigint;user_id:bigint
+core_termsandconditions|rows=2|id:INTEGER PK;version:varchar(30);content:TEXT;commission_rate:decimal;is_active:bool;published_at:datetime;created_at:datetime
+django_admin_log|rows=145|id:INTEGER PK;object_id:TEXT;object_repr:varchar(200);action_flag:smallint unsigned;change_message:TEXT;content_type_id:INTEGER;user_id:bigint;action_time:datetime
+django_content_type|rows=36|id:INTEGER PK;app_label:varchar(100);model:varchar(100)
+django_migrations|rows=50|id:INTEGER PK;app:varchar(255);name:varchar(255);applied:datetime
+django_session|rows=40|session_key:varchar(40) PK;session_data:TEXT;expire_date:datetime
+marketplace_category|rows=24|id:INTEGER PK;name:varchar(100);description:TEXT;icon:varchar(50);is_active:bool;order:INTEGER;created_at:datetime;updated_at:datetime;image:varchar(100);slug:varchar(120);parent_id:bigint
+marketplace_managedservice|rows=7|id:INTEGER PK;name:varchar(120);is_active:bool;order:integer unsigned;created_at:datetime;updated_at:datetime;description:TEXT;category_id:bigint
+marketplace_providerservice|rows=4|id:INTEGER PK;description:TEXT;price:decimal;price_type:varchar(20);estimated_duration:integer unsigned;is_active:bool;created_at:datetime;updated_at:datetime;provider_id:bigint;service_id:bigint;approval_status:varchar(20);catalog_service_id:bigint
+marketplace_qualification|rows=7|id:INTEGER PK;name:varchar(120);is_active:bool;order:integer unsigned;created_at:datetime;updated_at:datetime
+marketplace_service|rows=15|id:INTEGER PK;title:varchar(200);description:TEXT;price_type:varchar(20);price:decimal;delivery_time:INTEGER;image:varchar(100);status:varchar(20);views_count:INTEGER;orders_count:INTEGER;average_rating:decimal;is_featured:bool;created_at:datetime;updated_at:datetime;category_id:bigint;provider_id:bigint;currency:varchar(3);provider_service_id:bigint
+marketplace_specialization|rows=45|id:INTEGER PK;name:varchar(120);is_active:bool;order:integer unsigned;created_at:datetime;updated_at:datetime
+orders_delivery|rows=6|id:INTEGER PK;file:varchar(100);description:TEXT;delivered_at:datetime;is_accepted:bool;reviewed_at:datetime;review_note:TEXT;order_id:bigint
+orders_milestone|rows=0|id:INTEGER PK;title:varchar(200);description:TEXT;percentage:INTEGER;is_completed:bool;completed_at:datetime;order_index:INTEGER;created_at:datetime;order_id:bigint
+orders_order|rows=10|id:INTEGER PK;order_number:varchar(50);title:varchar(200);description:TEXT;agreed_price:decimal;delivery_days:INTEGER;expected_delivery_date:date;status:varchar(20);payment_status:varchar(20);created_at:datetime;accepted_at:datetime;started_at:datetime;delivered_at:datetime;completed_at:datetime;cancelled_at:datetime;cancellation_reason:TEXT;customer_id:bigint;provider_id:bigint;service_id:bigint;commission_amount:decimal;commission_rate:decimal;currency:varchar(3);dispute_reason:TEXT;provider_net_amount:decimal
+orders_ordermessage|rows=3|id:INTEGER PK;message:TEXT;created_at:datetime;is_read:bool;order_id:bigint;sender_id:bigint
+payments_commissionrecord|rows=7|id:INTEGER PK;commission_rate:decimal;gross_amount:decimal;commission_amount:decimal;provider_net_amount:decimal;currency:varchar(3);created_at:datetime;order_id:bigint;payment_id:bigint
+payments_payment|rows=8|id:INTEGER PK;amount:decimal;currency:varchar(3);status:varchar(20);transaction_id:varchar(120);gateway:varchar(80);paid_at:datetime;created_at:datetime;updated_at:datetime;order_id:bigint;commission_amount:decimal;commission_rate:decimal;proof_file:varchar(100);proof_uploaded_at:datetime;provider_net_amount:decimal;provider_wallet_account_snapshot:varchar(30);review_note:TEXT;reviewed_at:datetime;reviewed_by_id:bigint;payment_method:varchar(50);provider_wallet_id:bigint
+payments_providerwallet|rows=28|id:INTEGER PK;account_number:varchar(30);is_active:bool;created_at:datetime;updated_at:datetime;provider_id:bigint;wallet_id:bigint
+payments_wallet|rows=4|id:INTEGER PK;name:varchar(80);code:varchar(50);color:varchar(20);is_active:bool;display_order:integer unsigned;created_at:datetime;updated_at:datetime
+reviews_review|rows=7|id:INTEGER PK;service_rating:INTEGER;provider_rating:INTEGER;comment:TEXT;is_public:bool;created_at:datetime;updated_at:datetime;customer_id:bigint;order_id:bigint;provider_id:bigint;service_id:bigint
+--- EDGES ---
+accounts_providerdocument.reviewed_by_id->accounts_user.id
+accounts_providerdocument.provider_id->accounts_providerprofile.id
+accounts_providerdocument.document_type_id->accounts_providerdocumenttype.id
+accounts_providerprofile.location_district_id->core_district.id
+accounts_providerprofile.location_city_id->core_city.id
+accounts_providerprofile.verified_by_id->accounts_user.id
+accounts_providerprofile.user_id->accounts_user.id
+accounts_providerprofile_qualification_choices.qualification_id->marketplace_qualification.id
+accounts_providerprofile_qualification_choices.providerprofile_id->accounts_providerprofile.id
+accounts_providerprofile_specializations.specialization_id->marketplace_specialization.id
+accounts_providerprofile_specializations.providerprofile_id->accounts_providerprofile.id
+accounts_providerverificationrequest.reviewed_by_id->accounts_user.id
+accounts_providerverificationrequest.provider_id->accounts_providerprofile.id
+accounts_providerverificationrequest_documents.providerdocument_id->accounts_providerdocument.id
+accounts_providerverificationrequest_documents.providerverificationrequest_id->accounts_providerverificationrequest.id
+accounts_providerverificationrequest_requested_services.managedservice_id->marketplace_managedservice.id
+accounts_providerverificationrequest_requested_services.providerverificationrequest_id->accounts_providerverificationrequest.id
+accounts_user.location_district_id->core_district.id
+accounts_user.location_city_id->core_city.id
+accounts_user_groups.group_id->auth_group.id
+accounts_user_groups.user_id->accounts_user.id
+accounts_user_user_permissions.permission_id->auth_permission.id
+accounts_user_user_permissions.user_id->accounts_user.id
+auth_group_permissions.permission_id->auth_permission.id
+auth_group_permissions.group_id->auth_group.id
+auth_permission.content_type_id->django_content_type.id
+chat_conversation.service_id->marketplace_service.id
+chat_conversation.provider_id->accounts_user.id
+chat_conversation.customer_id->accounts_user.id
+chat_message.sender_id->accounts_user.id
+chat_message.conversation_id->chat_conversation.id
+core_auditlog.content_type_id->django_content_type.id
+core_auditlog.actor_id->accounts_user.id
+core_district.city_id->core_city.id
+core_notification.recipient_id->accounts_user.id
+core_termsacceptance.user_id->accounts_user.id
+core_termsacceptance.terms_id->core_termsandconditions.id
+django_admin_log.user_id->accounts_user.id
+django_admin_log.content_type_id->django_content_type.id
+marketplace_category.parent_id->marketplace_category.id
+marketplace_managedservice.category_id->marketplace_category.id
+marketplace_providerservice.catalog_service_id->marketplace_managedservice.id
+marketplace_providerservice.service_id->marketplace_service.id
+marketplace_providerservice.provider_id->accounts_providerprofile.id
+marketplace_service.provider_service_id->marketplace_providerservice.id
+marketplace_service.provider_id->accounts_user.id
+marketplace_service.category_id->marketplace_category.id
+orders_delivery.order_id->orders_order.id
+orders_milestone.order_id->orders_order.id
+orders_order.service_id->marketplace_service.id
+orders_order.provider_id->accounts_user.id
+orders_order.customer_id->accounts_user.id
+orders_ordermessage.sender_id->accounts_user.id
+orders_ordermessage.order_id->orders_order.id
+payments_commissionrecord.payment_id->payments_payment.id
+payments_commissionrecord.order_id->orders_order.id
+payments_payment.provider_wallet_id->payments_providerwallet.id
+payments_payment.reviewed_by_id->accounts_user.id
+payments_payment.order_id->orders_order.id
+payments_providerwallet.wallet_id->payments_wallet.id
+payments_providerwallet.provider_id->accounts_providerprofile.id
+reviews_review.service_id->marketplace_service.id
+reviews_review.provider_id->accounts_user.id
+reviews_review.order_id->orders_order.id
+reviews_review.customer_id->accounts_user.id

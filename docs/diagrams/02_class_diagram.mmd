@@ -1,0 +1,243 @@
+classDiagram
+    class User {
+        INTEGER id <<PK>>
+        varchar(20) role
+        bool is_active
+        datetime created_at
+        bigint location_city_id <<FK>>
+        bigint location_district_id <<FK>>
+    }
+    class ProviderProfile {
+        INTEGER id <<PK>>
+        datetime created_at
+        bigint user_id <<FK>>
+        bigint verified_by_id <<FK>>
+        varchar(20) status
+        bigint location_city_id <<FK>>
+        bigint location_district_id <<FK>>
+    }
+    class ProviderDocumentType {
+        INTEGER id <<PK>>
+        varchar(120) name
+        bool is_active
+        datetime created_at
+    }
+    class ProviderDocument {
+        INTEGER id <<PK>>
+        varchar(40) status
+        datetime created_at
+        bigint document_type_id <<FK>>
+        bigint provider_id <<FK>>
+        bigint reviewed_by_id <<FK>>
+    }
+    class ProviderVerificationRequest {
+        INTEGER id <<PK>>
+        varchar(30) status
+        datetime created_at
+        bigint provider_id <<FK>>
+        bigint reviewed_by_id <<FK>>
+    }
+    class City {
+        INTEGER id <<PK>>
+        varchar(100) name
+        bool is_active
+        datetime created_at
+    }
+    class District {
+        INTEGER id <<PK>>
+        varchar(100) name
+        bool is_active
+        datetime created_at
+        bigint city_id <<FK>>
+    }
+    class Notification {
+        INTEGER id <<PK>>
+        varchar(200) title
+        datetime created_at
+        bigint recipient_id <<FK>>
+    }
+    class AuditLog {
+        INTEGER id <<PK>>
+        datetime created_at
+        bigint actor_id <<FK>>
+        INTEGER content_type_id <<FK>>
+    }
+    class TermsAndConditions {
+        INTEGER id <<PK>>
+        bool is_active
+        datetime created_at
+    }
+    class TermsAcceptance {
+        INTEGER id <<PK>>
+        bigint terms_id <<FK>>
+        bigint user_id <<FK>>
+    }
+    class PlatformSetting {
+        INTEGER id <<PK>>
+    }
+    class Category {
+        INTEGER id <<PK>>
+        varchar(100) name
+        bool is_active
+        datetime created_at
+        bigint parent_id <<FK>>
+    }
+    class ManagedService {
+        INTEGER id <<PK>>
+        varchar(120) name
+        bool is_active
+        datetime created_at
+        bigint category_id <<FK>>
+    }
+    class Specialization {
+        INTEGER id <<PK>>
+        varchar(120) name
+        bool is_active
+        datetime created_at
+    }
+    class Qualification {
+        INTEGER id <<PK>>
+        varchar(120) name
+        bool is_active
+        datetime created_at
+    }
+    class ProviderService {
+        INTEGER id <<PK>>
+        decimal price
+        bool is_active
+        datetime created_at
+        bigint provider_id <<FK>>
+        bigint service_id <<FK>>
+        bigint catalog_service_id <<FK>>
+    }
+    class Service {
+        INTEGER id <<PK>>
+        varchar(200) title
+        decimal price
+        varchar(20) status
+        datetime created_at
+        bigint category_id <<FK>>
+        bigint provider_id <<FK>>
+        bigint provider_service_id <<FK>>
+    }
+    class Order {
+        INTEGER id <<PK>>
+        varchar(200) title
+        varchar(20) status
+        datetime created_at
+        bigint customer_id <<FK>>
+        bigint provider_id <<FK>>
+        bigint service_id <<FK>>
+    }
+    class Delivery {
+        INTEGER id <<PK>>
+        bigint order_id <<FK>>
+    }
+    class Milestone {
+        INTEGER id <<PK>>
+        varchar(200) title
+        datetime created_at
+        bigint order_id <<FK>>
+    }
+    class OrderMessage {
+        INTEGER id <<PK>>
+        datetime created_at
+        bigint order_id <<FK>>
+        bigint sender_id <<FK>>
+    }
+    class Wallet {
+        INTEGER id <<PK>>
+        varchar(80) name
+        bool is_active
+        datetime created_at
+    }
+    class ProviderWallet {
+        INTEGER id <<PK>>
+        bool is_active
+        datetime created_at
+        bigint provider_id <<FK>>
+        bigint wallet_id <<FK>>
+    }
+    class Payment {
+        INTEGER id <<PK>>
+        decimal amount
+        varchar(20) status
+        datetime created_at
+        bigint order_id <<FK>>
+        bigint reviewed_by_id <<FK>>
+        bigint provider_wallet_id <<FK>>
+    }
+    class CommissionRecord {
+        INTEGER id <<PK>>
+        datetime created_at
+        bigint order_id <<FK>>
+        bigint payment_id <<FK>>
+    }
+    class Review {
+        INTEGER id <<PK>>
+        datetime created_at
+        bigint customer_id <<FK>>
+        bigint order_id <<FK>>
+        bigint provider_id <<FK>>
+        bigint service_id <<FK>>
+    }
+    class Conversation {
+        INTEGER id <<PK>>
+        datetime created_at
+        bigint customer_id <<FK>>
+        bigint provider_id <<FK>>
+        bigint service_id <<FK>>
+    }
+    class Message {
+        INTEGER id <<PK>>
+        datetime created_at
+        bigint conversation_id <<FK>>
+        bigint sender_id <<FK>>
+    }
+    District <.. User : location_district_id
+    City <.. User : location_city_id
+    District <.. ProviderProfile : location_district_id
+    City <.. ProviderProfile : location_city_id
+    User <.. ProviderProfile : verified_by_id
+    User <.. ProviderProfile : user_id
+    User <.. ProviderDocument : reviewed_by_id
+    ProviderProfile <.. ProviderDocument : provider_id
+    ProviderDocumentType <.. ProviderDocument : document_type_id
+    User <.. ProviderVerificationRequest : reviewed_by_id
+    ProviderProfile <.. ProviderVerificationRequest : provider_id
+    City <.. District : city_id
+    User <.. Notification : recipient_id
+    User <.. AuditLog : actor_id
+    User <.. TermsAcceptance : user_id
+    TermsAndConditions <.. TermsAcceptance : terms_id
+    Category <.. Category : parent_id
+    Category <.. ManagedService : category_id
+    ManagedService <.. ProviderService : catalog_service_id
+    Service <.. ProviderService : service_id
+    ProviderProfile <.. ProviderService : provider_id
+    ProviderService <.. Service : provider_service_id
+    User <.. Service : provider_id
+    Category <.. Service : category_id
+    Service <.. Order : service_id
+    User <.. Order : provider_id
+    User <.. Order : customer_id
+    Order <.. Delivery : order_id
+    Order <.. Milestone : order_id
+    User <.. OrderMessage : sender_id
+    Order <.. OrderMessage : order_id
+    Wallet <.. ProviderWallet : wallet_id
+    ProviderProfile <.. ProviderWallet : provider_id
+    ProviderWallet <.. Payment : provider_wallet_id
+    User <.. Payment : reviewed_by_id
+    Order <.. Payment : order_id
+    Payment <.. CommissionRecord : payment_id
+    Order <.. CommissionRecord : order_id
+    Service <.. Review : service_id
+    User <.. Review : provider_id
+    Order <.. Review : order_id
+    User <.. Review : customer_id
+    Service <.. Conversation : service_id
+    User <.. Conversation : provider_id
+    User <.. Conversation : customer_id
+    User <.. Message : sender_id
+    Conversation <.. Message : conversation_id

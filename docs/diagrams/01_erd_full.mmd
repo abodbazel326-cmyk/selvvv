@@ -1,0 +1,493 @@
+erDiagram
+    accounts_providerdocument {
+        integer id PK
+        varchar_40_ status
+        datetime reviewed_at
+        text review_note
+        datetime created_at
+        datetime updated_at
+        bigint document_type_id FK
+        bigint provider_id FK
+        bigint reviewed_by_id FK
+        varchar_100_ file
+    }
+    accounts_providerdocumenttype {
+        integer id PK
+        varchar_50_ code
+        varchar_120_ name
+        bool is_required
+        bool is_active
+        datetime created_at
+    }
+    accounts_providerprofile {
+        integer id PK
+        text bio
+        varchar_100_ profile_image
+        varchar_100_ specialization
+        integer_unsigned experience_years
+        decimal hourly_rate
+        text address
+        decimal latitude
+        decimal longitude
+        integer_unsigned total_orders
+        integer_unsigned completed_orders
+        decimal average_rating
+        bool is_available
+        datetime created_at
+        datetime updated_at
+        bigint user_id FK
+        text admin_notes
+        varchar_120_ availability
+        varchar_100_ city
+        varchar_150_ display_name
+        varchar_100_ district
+        varchar_254_ email
+        text experience
+        varchar_20_ phone
+        text qualifications
+        integer_unsigned service_radius
+        varchar_30_ verification_status
+        datetime verified_at
+        bigint verified_by_id FK
+        varchar_20_ status
+        bigint location_city_id FK
+        bigint location_district_id FK
+    }
+    accounts_providerprofile_qualification_choices {
+        integer id PK
+        bigint providerprofile_id FK
+        bigint qualification_id FK
+    }
+    accounts_providerprofile_specializations {
+        integer id PK
+        bigint providerprofile_id FK
+        bigint specialization_id FK
+    }
+    accounts_providerverificationrequest {
+        integer id PK
+        varchar_30_ status
+        text admin_note
+        datetime reviewed_at
+        datetime created_at
+        datetime updated_at
+        bigint provider_id FK
+        bigint reviewed_by_id FK
+        text profile_snapshot
+        datetime submitted_at
+    }
+    accounts_providerverificationrequest_documents {
+        integer id PK
+        bigint providerverificationrequest_id FK
+        bigint providerdocument_id FK
+    }
+    accounts_providerverificationrequest_requested_services {
+        integer id PK
+        bigint providerverificationrequest_id FK
+        bigint managedservice_id FK
+    }
+    accounts_user {
+        integer id PK
+        varchar_128_ password
+        datetime last_login
+        bool is_superuser
+        varchar_150_ username
+        varchar_150_ first_name
+        varchar_150_ last_name
+        bool is_staff
+        datetime date_joined
+        varchar_254_ email
+        varchar_20_ role
+        varchar_100_ city
+        bool is_verified
+        bool is_active
+        datetime created_at
+        datetime updated_at
+        varchar_20_ phone
+        bigint location_city_id FK
+        bigint location_district_id FK
+    }
+    accounts_user_groups {
+        integer id PK
+        bigint user_id FK
+        integer group_id FK
+    }
+    accounts_user_user_permissions {
+        integer id PK
+        bigint user_id FK
+        integer permission_id FK
+    }
+    auth_group {
+        integer id PK
+        varchar_150_ name
+    }
+    auth_group_permissions {
+        integer id PK
+        integer group_id FK
+        integer permission_id FK
+    }
+    auth_permission {
+        integer id PK
+        integer content_type_id FK
+        varchar_100_ codename
+        varchar_255_ name
+    }
+    chat_conversation {
+        integer id PK
+        datetime created_at
+        datetime updated_at
+        bigint customer_id FK
+        bigint provider_id FK
+        bigint service_id FK
+    }
+    chat_message {
+        integer id PK
+        text content
+        bool is_read
+        datetime created_at
+        bigint conversation_id FK
+        bigint sender_id FK
+    }
+    core_auditlog {
+        integer id PK
+        varchar_100_ action
+        varchar_64_ object_id
+        text metadata
+        datetime created_at
+        bigint actor_id FK
+        integer content_type_id FK
+    }
+    core_city {
+        integer id PK
+        varchar_100_ name
+        bool is_active
+        integer_unsigned order
+        datetime created_at
+        datetime updated_at
+    }
+    core_district {
+        integer id PK
+        varchar_100_ name
+        bool is_active
+        integer_unsigned order
+        datetime created_at
+        datetime updated_at
+        bigint city_id FK
+    }
+    core_notification {
+        integer id PK
+        varchar_40_ event_type
+        varchar_200_ title
+        text message
+        bool is_read
+        datetime created_at
+        bigint recipient_id FK
+    }
+    core_platformsetting {
+        integer id PK
+        varchar_100_ key
+        varchar_500_ value
+        text description
+        datetime updated_at
+    }
+    core_termsacceptance {
+        integer id PK
+        decimal commission_rate
+        datetime accepted_at
+        char_39_ ip_address
+        bigint terms_id FK
+        bigint user_id FK
+    }
+    core_termsandconditions {
+        integer id PK
+        varchar_30_ version
+        text content
+        decimal commission_rate
+        bool is_active
+        datetime published_at
+        datetime created_at
+    }
+    django_admin_log {
+        integer id PK
+        text object_id
+        varchar_200_ object_repr
+        smallint_unsigned action_flag
+        text change_message
+        integer content_type_id FK
+        bigint user_id FK
+        datetime action_time
+    }
+    django_content_type {
+        integer id PK
+        varchar_100_ app_label
+        varchar_100_ model
+    }
+    django_migrations {
+        integer id PK
+        varchar_255_ app
+        varchar_255_ name
+        datetime applied
+    }
+    django_session {
+        varchar_40_ session_key PK
+        text session_data
+        datetime expire_date
+    }
+    marketplace_category {
+        integer id PK
+        varchar_100_ name
+        text description
+        varchar_50_ icon
+        bool is_active
+        integer order
+        datetime created_at
+        datetime updated_at
+        varchar_100_ image
+        varchar_120_ slug
+        bigint parent_id FK
+    }
+    marketplace_managedservice {
+        integer id PK
+        varchar_120_ name
+        bool is_active
+        integer_unsigned order
+        datetime created_at
+        datetime updated_at
+        text description
+        bigint category_id FK
+    }
+    marketplace_providerservice {
+        integer id PK
+        text description
+        decimal price
+        varchar_20_ price_type
+        integer_unsigned estimated_duration
+        bool is_active
+        datetime created_at
+        datetime updated_at
+        bigint provider_id FK
+        bigint service_id FK
+        varchar_20_ approval_status
+        bigint catalog_service_id FK
+    }
+    marketplace_qualification {
+        integer id PK
+        varchar_120_ name
+        bool is_active
+        integer_unsigned order
+        datetime created_at
+        datetime updated_at
+    }
+    marketplace_service {
+        integer id PK
+        varchar_200_ title
+        text description
+        varchar_20_ price_type
+        decimal price
+        integer delivery_time
+        varchar_100_ image
+        varchar_20_ status
+        integer views_count
+        integer orders_count
+        decimal average_rating
+        bool is_featured
+        datetime created_at
+        datetime updated_at
+        bigint category_id FK
+        bigint provider_id FK
+        varchar_3_ currency
+        bigint provider_service_id FK
+    }
+    marketplace_specialization {
+        integer id PK
+        varchar_120_ name
+        bool is_active
+        integer_unsigned order
+        datetime created_at
+        datetime updated_at
+    }
+    orders_delivery {
+        integer id PK
+        varchar_100_ file
+        text description
+        datetime delivered_at
+        bool is_accepted
+        datetime reviewed_at
+        text review_note
+        bigint order_id FK
+    }
+    orders_milestone {
+        integer id PK
+        varchar_200_ title
+        text description
+        integer percentage
+        bool is_completed
+        datetime completed_at
+        integer order_index
+        datetime created_at
+        bigint order_id FK
+    }
+    orders_order {
+        integer id PK
+        varchar_50_ order_number
+        varchar_200_ title
+        text description
+        decimal agreed_price
+        integer delivery_days
+        date expected_delivery_date
+        varchar_20_ status
+        varchar_20_ payment_status
+        datetime created_at
+        datetime accepted_at
+        datetime started_at
+        datetime delivered_at
+        datetime completed_at
+        datetime cancelled_at
+        text cancellation_reason
+        bigint customer_id FK
+        bigint provider_id FK
+        bigint service_id FK
+        decimal commission_amount
+        decimal commission_rate
+        varchar_3_ currency
+        text dispute_reason
+        decimal provider_net_amount
+    }
+    orders_ordermessage {
+        integer id PK
+        text message
+        datetime created_at
+        bool is_read
+        bigint order_id FK
+        bigint sender_id FK
+    }
+    payments_commissionrecord {
+        integer id PK
+        decimal commission_rate
+        decimal gross_amount
+        decimal commission_amount
+        decimal provider_net_amount
+        varchar_3_ currency
+        datetime created_at
+        bigint order_id FK
+        bigint payment_id FK
+    }
+    payments_payment {
+        integer id PK
+        decimal amount
+        varchar_3_ currency
+        varchar_20_ status
+        varchar_120_ transaction_id
+        varchar_80_ gateway
+        datetime paid_at
+        datetime created_at
+        datetime updated_at
+        bigint order_id FK
+        decimal commission_amount
+        decimal commission_rate
+        varchar_100_ proof_file
+        datetime proof_uploaded_at
+        decimal provider_net_amount
+        varchar_30_ provider_wallet_account_snapshot
+        text review_note
+        datetime reviewed_at
+        bigint reviewed_by_id FK
+        varchar_50_ payment_method
+        bigint provider_wallet_id FK
+    }
+    payments_providerwallet {
+        integer id PK
+        varchar_30_ account_number
+        bool is_active
+        datetime created_at
+        datetime updated_at
+        bigint provider_id FK
+        bigint wallet_id FK
+    }
+    payments_wallet {
+        integer id PK
+        varchar_80_ name
+        varchar_50_ code
+        varchar_20_ color
+        bool is_active
+        integer_unsigned display_order
+        datetime created_at
+        datetime updated_at
+    }
+    reviews_review {
+        integer id PK
+        integer service_rating
+        integer provider_rating
+        text comment
+        bool is_public
+        datetime created_at
+        datetime updated_at
+        bigint customer_id FK
+        bigint order_id FK
+        bigint provider_id FK
+        bigint service_id FK
+    }
+    accounts_user ||--o{ accounts_providerdocument : "reviewed_by_id"
+    accounts_providerprofile ||--o{ accounts_providerdocument : "provider_id"
+    accounts_providerdocumenttype ||--o{ accounts_providerdocument : "document_type_id"
+    core_district ||--o{ accounts_providerprofile : "location_district_id"
+    core_city ||--o{ accounts_providerprofile : "location_city_id"
+    accounts_user ||--o{ accounts_providerprofile : "verified_by_id"
+    accounts_user ||--o| accounts_providerprofile : "user_id"
+    marketplace_qualification ||--o{ accounts_providerprofile_qualification_choices : "qualification_id"
+    accounts_providerprofile ||--o{ accounts_providerprofile_qualification_choices : "providerprofile_id"
+    marketplace_specialization ||--o{ accounts_providerprofile_specializations : "specialization_id"
+    accounts_providerprofile ||--o{ accounts_providerprofile_specializations : "providerprofile_id"
+    accounts_user ||--o{ accounts_providerverificationrequest : "reviewed_by_id"
+    accounts_providerprofile ||--o{ accounts_providerverificationrequest : "provider_id"
+    accounts_providerdocument ||--o{ accounts_providerverificationrequest_documents : "providerdocument_id"
+    accounts_providerverificationrequest ||--o{ accounts_providerverificationrequest_documents : "providerverificationrequest_id"
+    marketplace_managedservice ||--o{ accounts_providerverificationrequest_requested_services : "managedservice_id"
+    accounts_providerverificationrequest ||--o{ accounts_providerverificationrequest_requested_services : "providerverificationrequest_id"
+    core_district ||--o{ accounts_user : "location_district_id"
+    core_city ||--o{ accounts_user : "location_city_id"
+    auth_group ||--o{ accounts_user_groups : "group_id"
+    accounts_user ||--o{ accounts_user_groups : "user_id"
+    auth_permission ||--o{ accounts_user_user_permissions : "permission_id"
+    accounts_user ||--o{ accounts_user_user_permissions : "user_id"
+    auth_permission ||--o{ auth_group_permissions : "permission_id"
+    auth_group ||--o{ auth_group_permissions : "group_id"
+    django_content_type ||--o{ auth_permission : "content_type_id"
+    marketplace_service ||--o{ chat_conversation : "service_id"
+    accounts_user ||--o{ chat_conversation : "provider_id"
+    accounts_user ||--o{ chat_conversation : "customer_id"
+    accounts_user ||--o{ chat_message : "sender_id"
+    chat_conversation ||--o{ chat_message : "conversation_id"
+    django_content_type ||--o{ core_auditlog : "content_type_id"
+    accounts_user ||--o{ core_auditlog : "actor_id"
+    core_city ||--o{ core_district : "city_id"
+    accounts_user ||--o{ core_notification : "recipient_id"
+    accounts_user ||--o{ core_termsacceptance : "user_id"
+    core_termsandconditions ||--o{ core_termsacceptance : "terms_id"
+    accounts_user ||--o{ django_admin_log : "user_id"
+    django_content_type ||--o{ django_admin_log : "content_type_id"
+    marketplace_category ||--o{ marketplace_category : "parent_id"
+    marketplace_category ||--o{ marketplace_managedservice : "category_id"
+    marketplace_managedservice ||--o{ marketplace_providerservice : "catalog_service_id"
+    marketplace_service ||--o{ marketplace_providerservice : "service_id"
+    accounts_providerprofile ||--o{ marketplace_providerservice : "provider_id"
+    marketplace_providerservice ||--o{ marketplace_service : "provider_service_id"
+    accounts_user ||--o{ marketplace_service : "provider_id"
+    marketplace_category ||--o{ marketplace_service : "category_id"
+    orders_order ||--o{ orders_delivery : "order_id"
+    orders_order ||--o{ orders_milestone : "order_id"
+    marketplace_service ||--o{ orders_order : "service_id"
+    accounts_user ||--o{ orders_order : "provider_id"
+    accounts_user ||--o{ orders_order : "customer_id"
+    accounts_user ||--o{ orders_ordermessage : "sender_id"
+    orders_order ||--o{ orders_ordermessage : "order_id"
+    payments_payment ||--o| payments_commissionrecord : "payment_id"
+    orders_order ||--o| payments_commissionrecord : "order_id"
+    payments_providerwallet ||--o{ payments_payment : "provider_wallet_id"
+    accounts_user ||--o{ payments_payment : "reviewed_by_id"
+    orders_order ||--o{ payments_payment : "order_id"
+    payments_wallet ||--o{ payments_providerwallet : "wallet_id"
+    accounts_providerprofile ||--o{ payments_providerwallet : "provider_id"
+    marketplace_service ||--o{ reviews_review : "service_id"
+    accounts_user ||--o{ reviews_review : "provider_id"
+    orders_order ||--o| reviews_review : "order_id"
+    accounts_user ||--o{ reviews_review : "customer_id"
