@@ -30,7 +30,6 @@
 
   <form method="post" enctype="multipart/form-data" action="{% url 'accounts:provider_profile_edit' %}" class="loading-form">
     {% csrf_token %}
-    {{ provider_form.city }}{{ provider_form.district }}
 
     <div class="row g-4">
       <div class="col-lg-6">
@@ -54,8 +53,6 @@
             <div class="row g-3">
               <div class="col-md-6">{{ provider_form.display_name|as_crispy_field }}</div>
               <div class="col-12">{{ provider_form.bio|as_crispy_field }}</div>
-              <div class="col-md-6">{{ provider_form.phone|as_crispy_field }}</div>
-              <div class="col-md-6">{{ provider_form.email|as_crispy_field }}</div>
               <div class="col-12">{{ provider_form.profile_image|as_crispy_field }}</div>
             </div>
           </div>
@@ -107,7 +104,7 @@
         <p class="text-muted">هذه الخدمات معتمدة من الإدارة ويمكنك إنشاء عروض تجارية منها من صفحة خدماتي.</p>
         <div class="row g-2">
           {% for provider_service in approved_provider_services %}
-            <div class="col-md-6"><div class="border rounded p-3 h-100"><strong>{{ provider_service.catalog_service.name }}</strong>{% if provider_service.catalog_service.category %}<small class="d-block text-muted">{{ provider_service.catalog_service.category.name }}</small>{% endif %}<span class="badge text-bg-success mt-2">{{ provider_service.get_approval_status_display }}</span></div></div>
+            <div class="col-md-6"><div class="border rounded p-3 h-100"><strong>{{ provider_service.managed_service.name }}</strong>{% if provider_service.managed_service.category %}<small class="d-block text-muted">{{ provider_service.managed_service.category.name }}</small>{% endif %}<span class="badge text-bg-success mt-2">{{ provider_service.get_approval_status_display }}</span></div></div>
           {% empty %}
             <div class="col-12"><p class="text-muted mb-0">لا توجد خدمات مركزية معتمدة بعد.</p></div>
           {% endfor %}

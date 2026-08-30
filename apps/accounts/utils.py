@@ -49,7 +49,7 @@ def get_provider_onboarding_status(profile):
     documents_ok = required_codes.issubset(uploaded_codes) if required_codes else profile.documents.filter(status__in=['pending', 'approved']).exists()
 
     services_ok = ProviderService.objects.filter(
-        provider=profile, catalog_service__isnull=False, catalog_service__is_active=True
+        provider=profile, managed_service__isnull=False, managed_service__is_active=True
     ).exists()
 
     active_terms = TermsAndConditions.objects.filter(is_active=True).order_by('-published_at', '-created_at').first()

@@ -15,7 +15,7 @@ class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
         fields = [
-            'provider_service', 'title', 'category', 'description',
+            'provider_service', 'title', 'description',
             'price_type', 'currency', 'price', 'delivery_time',
             'image'
         ]
@@ -25,7 +25,6 @@ class ServiceForm(forms.ModelForm):
                 'placeholder': 'مثال: تصميم شعار احترافي'
             }),
             'provider_service': forms.Select(attrs={'class': 'form-select'}),
-            'category': forms.HiddenInput(),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 6,
@@ -54,7 +53,6 @@ class ServiceForm(forms.ModelForm):
         labels = {
             'title': 'عنوان الخدمة',
             'provider_service': 'الخدمة المركزية المعتمدة',
-            'category': 'التصنيف',
             'description': 'وصف الخدمة',
             'price_type': 'نوع السعر',
             'currency': 'العملة',
@@ -72,33 +70,25 @@ class ServiceForm(forms.ModelForm):
             empty_label='اختر الخدمة المركزية التي سيقدمها هذا العرض',
             widget=forms.Select(attrs={'class': 'form-select'}),
         )
-        self.fields['category'].widget = forms.HiddenInput()
-        self.fields['category'].required = False
         self.fields['provider_service'].required = True
         if provider_user is not None and getattr(provider_user, 'is_provider', lambda: False)():
             profile = getattr(provider_user, 'provider_profile', None)
             if profile is not None:
                 approved = ProviderService.objects.filter(
                     provider=profile,
-                    catalog_service__isnull=False,
-                    catalog_service__is_active=True,
-                    catalog_service__category__isnull=False,
+                    managed_service__is_active=True,
                     is_active=True,
                     approval_status__in=['approved', 'active'],
-                ).select_related('catalog_service', 'catalog_service__category').order_by('catalog_service__name')
+                ).select_related('managed_service', 'managed_service__category').order_by('managed_service__name')
                 self.fields['provider_service'].queryset = approved
         elif self.instance.pk and self.instance.provider_service_id:
-            self.fields['provider_service'].queryset = ProviderService.objects.filter(pk=self.instance.provider_service_id).select_related('catalog_service')
+            self.fields['provider_service'].queryset = ProviderService.objects.filter(pk=self.instance.provider_service_id).select_related('managed_service')
     
     def clean(self):
         cleaned_data = super().clean()
         price_type = cleaned_data.get('price_type')
         price = cleaned_data.get('price')
-        category = cleaned_data.get('category')
         provider_service = cleaned_data.get('provider_service')
-        if provider_service is not None:
-            category = provider_service.catalog_service.category
-            cleaned_data['category'] = category
         if not provider_service:
             self.add_error('provider_service', 'يجب اختيار خدمة مركزية معتمدة.')
         
@@ -108,7 +98,7 @@ class ServiceForm(forms.ModelForm):
                 'يجب تحديد السعر عند اختيار "سعر ثابت" أو "بالساعة"'
             )
         if self.provider_user is not None and provider_service is not None:
-            if provider_service.provider.user_id != self.provider_user.id or not provider_service.is_active or provider_service.approval_status not in {'approved', 'active'} or not provider_service.catalog_service_id or not provider_service.catalog_service.is_active:
+            if provider_service.provider.user_id != self.provider_user.id or not provider_service.is_active or provider_service.approval_status not in {'approved', 'active'} or not provider_service.managed_service_id or not provider_service.managed_service.is_active:
                 raise forms.ValidationError('لا يمكنك إضافة خدمة إلا تحت اعتماد مركزي نشط خاص بك.')
             duplicate_qs = Service.objects.filter(provider=self.provider_user, provider_service=provider_service, title=cleaned_data.get('title', '').strip())
             if self.instance.pk:

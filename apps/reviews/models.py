@@ -106,6 +106,8 @@ class Review(models.Model):
                 raise ValidationError('التقييم مسموح فقط لصاحب الطلب.')
             if self.provider_id and self.provider_id != self.order.provider_id:
                 raise ValidationError('مقدم الخدمة يجب أن يطابق الطلب.')
+            if self.service_id and self.service_id != self.order.service_id:
+                raise ValidationError('الخدمة يجب أن تطابق خدمة الطلب.')
 
     def get_average_rating(self):
         """حساب متوسط التقييمين"""

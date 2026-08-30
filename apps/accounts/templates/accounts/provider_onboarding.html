@@ -36,7 +36,7 @@
 
     <div class="wizard-content card-body">
       <form id="provider-onboarding-form" method="post" enctype="multipart/form-data" class="loading-form" novalidate>
-        {% csrf_token %}<input type="hidden" name="wizard_action" value="save_profile"><input type="hidden" name="wizard_step" id="wizard-step-input" value="{{ current_step }}">{{ provider_form.city }}{{ provider_form.district }}
+        {% csrf_token %}<input type="hidden" name="wizard_action" value="save_profile"><input type="hidden" name="wizard_step" id="wizard-step-input" value="{{ current_step }}">
         <section id="step-1" class="wizard-panel active">
           <h4 class="fw-bold mb-3">1. المعلومات الأساسية</h4>
           <div class="alert alert-info">يمكنك إدخال بيانات الحساب وبيانات العمل بشكل مستقل؛ لكل منهما مصدره الخاص.</div>

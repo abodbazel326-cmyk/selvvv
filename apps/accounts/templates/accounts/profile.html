@@ -134,7 +134,7 @@
                         <div class="col-md-6">
                             <div class="info-card">
                                 <p class="mb-1 text-muted small">التخصص</p>
-                                <p class="fw-bold fs-5">{{ provider_profile.specialization|default:"غير محدد" }}</p>
+                                <p class="fw-bold fs-5">{% for item in provider_profile.specializations.all %}{{ item.name }}{% if not forloop.last %}، {% endif %}{% empty %}غير محدد{% endfor %}</p>
                             </div>
                         </div>
                         <div class="col-md-6">
