@@ -1,0 +1,52 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="bulk-bar">
+  <span class="fw-bold">خدمات مقدمي الخدمات</span>
+</div>
+<form class="filters" method="get">
+  <input name="q" class="form-control" value="{{ request.GET.q|default:'' }}" placeholder="ابحث باسم مقدم الخدمة أو الخدمة">
+  <select name="status" class="form-select">
+    <option value="">كل الحالات</option>
+    {% for k,v in status_choices %}<option value="{{ k }}"{% if request.GET.status == k %} selected{% endif %}>{{ v }}</option>{% endfor %}
+  </select>
+  <button type="submit" class="btn btn-primary">بحث</button>
+</form>
+<div class="table-card">
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead><tr><th>مقدم الخدمة</th><th>الخدمة المركزية</th><th>الخدمة التجارية</th><th>السعر</th><th>نوع السعر</th><th>الحالة</th><th>التفعيل</th><th>العروض التجارية</th><th>إجراءات</th></tr></thead>
+      <tbody>
+      {% for ps in page_obj %}
+        <tr>
+          <td>
+            {% if ps.provider %}
+              {% if ps.provider.display_name %}{{ ps.provider.display_name }}
+              {% elif ps.provider.user %}{{ ps.provider.user.get_full_name|default:ps.provider.user.username }}
+              {% else %}—{% endif %}
+            {% else %}—{% endif %}
+          </td>
+          <td>
+            {% if ps.catalog_service %}
+              <strong>{{ ps.catalog_service.name }}</strong>
+              {% if ps.catalog_service.category %}<small class="d-block text-muted">التصنيف: {{ ps.catalog_service.category.name }}</small>{% endif %}
+            {% else %}—{% endif %}
+          </td>
+          <td>{% if ps.service %}<strong>{{ ps.service.title }}</strong>{% else %}<span class="text-muted">اعتماد خدمة مركزية</span>{% endif %}</td>
+          <td>{% if ps.service %}{{ ps.service.get_price_display }}{% elif ps.catalog_service %}<span class="text-muted">يحدد عند إنشاء العرض التجاري</span>{% else %}—{% endif %}</td>
+          <td>{% if ps.service %}{{ ps.service.get_price_type_display }}{% else %}—{% endif %}</td>
+          <td><span class="badge text-bg-info">{{ ps.get_approval_status_display }}</span></td>
+          <td>{% if ps.is_active %}<span class="badge text-bg-success">نشطة</span>{% else %}<span class="badge text-bg-secondary">غير نشطة</span>{% endif %}</td>
+          <td>{{ ps.commercial_services_count }}</td>
+          <td class="actions-cell">
+            {% if ps.approval_status != 'approved' or not ps.is_active %}<form method="post" action="{% url 'dashboard:provider_service_action' ps.pk 'approve' %}" data-confirm="اعتماد خدمة مقدم الخدمة؟">{% csrf_token %}<button type="submit" class="btn btn-sm btn-success">اعتماد</button></form>{% endif %}
+            {% if ps.is_active %}<form method="post" action="{% url 'dashboard:provider_service_action' ps.pk 'deactivate' %}" data-confirm="تعطيل اعتماد الخدمة؟">{% csrf_token %}<button type="submit" class="btn btn-sm btn-warning">تعطيل</button></form>{% endif %}
+            {% if ps.approval_status != 'rejected' %}<form method="post" action="{% url 'dashboard:provider_service_action' ps.pk 'reject' %}" data-confirm="رفض اعتماد الخدمة؟">{% csrf_token %}<input type="hidden" name="reason" value="رفض إداري"><button type="submit" class="btn btn-sm btn-danger">رفض</button></form>{% endif %}
+          </td>
+        </tr>
+      {% empty %}<tr><td colspan="9">{% include 'dashboard/partials/empty.html' %}</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% include 'dashboard/partials/pagination.html' %}
+{% endblock %}

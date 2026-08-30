@@ -1,0 +1,43 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="panel">
+      <h2>{% if verification.provider.display_name %}{{ verification.provider.display_name }}{% else %}{{ verification.provider.user.username }}{% endif %}</h2>
+      <p class="text-muted mb-1">{{ verification.provider.get_status_display }} — {{ verification.provider.get_verification_status_display }} — {{ verification.get_status_display }}</p>
+      {% if verification.admin_note %}<div class="alert alert-warning"><strong>ملاحظة الإدارة:</strong> {{ verification.admin_note }}</div>{% endif %}
+      <dl class="row mb-0">
+        <dt class="col-md-4">الاسم الكامل</dt><dd class="col-md-8">{{ verification.provider.user.get_full_name|default:verification.provider.user.username }}</dd>
+        <dt class="col-md-4">التواصل</dt><dd class="col-md-8">{{ verification.provider.user.email }} — {{ verification.provider.user.phone|default:'—' }}</dd>
+        <dt class="col-md-4">اسم العرض</dt><dd class="col-md-8">{{ verification.provider.display_name|default:'—' }}</dd>
+        <dt class="col-md-4">النبذة</dt><dd class="col-md-8">{{ verification.provider.bio|default:'—' }}</dd>
+        <dt class="col-md-4">الخبرة</dt><dd class="col-md-8">{{ verification.provider.experience_years }} سنة — {{ verification.provider.experience|default:'—' }}</dd>
+        <dt class="col-md-4">المؤهلات</dt><dd class="col-md-8">{% for q in verification.provider.qualification_choices.all %}{{ q.name }}{% if not forloop.last %}، {% endif %}{% empty %}—{% endfor %}</dd>
+        <dt class="col-md-4">التخصصات</dt><dd class="col-md-8">{% for s in verification.provider.specializations.all %}{{ s.name }}{% if not forloop.last %}، {% endif %}{% empty %}—{% endfor %}</dd>
+        <dt class="col-md-4">الموقع</dt><dd class="col-md-8">{% if verification.provider.location_city %}{{ verification.provider.location_city.name }}{% elif verification.provider.city %}{{ verification.provider.city }}{% else %}—{% endif %} - {% if verification.provider.location_district %}{{ verification.provider.location_district.name }}{% elif verification.provider.district %}{{ verification.provider.district }}{% else %}—{% endif %}</dd>
+      </dl>
+      <div id="providerMap" class="map mt-3" style="height:300px" data-lat="{{ verification.provider.latitude|default_if_none:'' }}" data-lng="{{ verification.provider.longitude|default_if_none:'' }}"></div>
+    </div>
+
+    <div class="panel">
+      <h2>الخدمات المطلوبة</h2>
+      {% for s in verification.requested_services.all %}<span class="badge text-bg-primary m-1">{{ s.name }}{% if s.category %} — {{ s.category.name }}{% endif %}</span>{% empty %}{% include 'dashboard/partials/empty.html' %}{% endfor %}
+    </div>
+
+    <div class="panel">
+      <h2>المستندات</h2>
+      {% for d in verification.documents.all %}<p>{{ d.document_type.name }} — {{ d.get_status_display }}{% if d.review_note %} — {{ d.review_note }}{% endif %} — <a href="{% url 'dashboard:document_detail' d.pk %}">إدارة المستند</a></p>{% empty %}{% include 'dashboard/partials/empty.html' %}{% endfor %}
+    </div>
+
+    <div class="panel">
+      <h2>العمولة والمحافظ</h2>
+      {% with acceptances=verification.provider.user.terms_acceptances.all %}
+        {% for acceptance in acceptances %}<p>تم قبول سياسة {{ acceptance.terms.version }} بنسبة {{ acceptance.commission_rate }}% بتاريخ {{ acceptance.accepted_at|date:'Y-m-d H:i' }}</p>{% empty %}<p class="text-muted">لا توجد موافقة محفوظة على سياسة العمولة.</p>{% endfor %}
+      {% endwith %}
+      <h6>محافظ مقدم الخدمة</h6>
+      {% for wallet in verification.provider.wallet_accounts.all %}<p>{{ wallet.wallet.name }} — {{ wallet.account_number }} — {% if wallet.is_active %}نشطة{% else %}غير نشطة{% endif %}</p>{% empty %}<p class="text-muted">لا توجد محافظ.</p>{% endfor %}
+    </div>
+  </div>
+  <div class="col-lg-4"><div class="panel sticky"><h2>قرار الإدارة</h2><form method="post" action="{% url 'dashboard:verification_decision' verification.pk %}" data-confirm="حفظ قرار التوثيق؟">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary w-100">حفظ القرار</button></form></div></div>
+</div>
+{% endblock %}

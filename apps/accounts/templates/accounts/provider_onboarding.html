@@ -1,0 +1,829 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags static %}
+
+{% block title %}توثيق وتدشين حساب مقدم الخدمة - منصة سوق الخدمات{% endblock %}
+
+{% block content %}
+<div class="container py-5 provider-edit-page provider-wizard-page">
+  <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+    <div>
+      <h2 class="fw-bold mb-1"><i class="bi bi-ui-checks-grid ms-2"></i>توثيق وتدشين حساب مقدم الخدمة</h2>
+      <p class="text-muted mb-0">أدخل بياناتك على مراحل. يتم حفظ التغييرات تلقائيًا عند الانتقال بين الخطوات، ويمكنك العودة والمتابعة من آخر خطوة وصلت إليها.</p>
+    </div>
+    <span class="badge fs-6 {% if profile.verification_status == 'verified' %}bg-success{% elif profile.verification_status == 'suspended' %}bg-danger{% elif profile.verification_status == 'pending_review' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">{{ profile.get_verification_status_display }}</span>
+  </div>
+
+  {% if profile.verification_status == 'needs_documents' or profile.verification_status == 'rejected' %}
+  <div class="alert alert-warning"><strong>ملاحظة الإدارة:</strong> {{ profile.admin_notes|default:'يرجى مراجعة المتطلبات المطلوبة وإعادة إرسال طلب التوثيق.' }}</div>
+  {% endif %}
+  {% with last_request=profile.verification_requests.first %}{% if last_request.admin_note and last_request.status != 'approved' %}<div class="alert alert-info"><strong>ملاحظة طلب التوثيق:</strong> {{ last_request.admin_note }}</div>{% endif %}{% endwith %}
+
+  {% if user_form.errors or provider_form.errors or document_form.errors %}
+  <div class="alert alert-danger"><strong>لم يتم حفظ بعض البيانات.</strong> راجع أخطاء الحقول أدناه. {{ user_form.non_field_errors }}{{ provider_form.non_field_errors }}{{ document_form.non_field_errors }}</div>
+  {% endif %}
+
+  <div class="wizard-shell card border-0 shadow-sm">
+    <div class="wizard-steps" role="tablist" aria-label="خطوات التوثيق">
+      <button class="wizard-step active" type="button" data-wizard-target="step-1">1 <span>المعلومات الأساسية</span></button>
+      <button class="wizard-step" type="button" data-wizard-target="step-2">2 <span>النشاط والمهنة</span></button>
+      <button class="wizard-step" type="button" data-wizard-target="step-3">3 <span>الخبرة والمؤهلات</span></button>
+      <button class="wizard-step" type="button" data-wizard-target="step-4">4 <span>الموقع</span></button>
+      <button class="wizard-step" type="button" data-wizard-target="step-5">5 <span>العمولة والمحافظ</span></button>
+      <button class="wizard-step" type="button" data-wizard-target="step-6">6 <span>المستندات</span></button>
+      <button class="wizard-step" type="button" data-wizard-target="step-7">7 <span>الخدمات</span></button>
+      <button class="wizard-step" type="button" data-wizard-target="step-8">8 <span>المراجعة</span></button>
+    </div>
+
+    <div class="wizard-content card-body">
+      <form id="provider-onboarding-form" method="post" enctype="multipart/form-data" class="loading-form" novalidate>
+        {% csrf_token %}<input type="hidden" name="wizard_action" value="save_profile"><input type="hidden" name="wizard_step" id="wizard-step-input" value="{{ current_step }}">{{ provider_form.city }}{{ provider_form.district }}
+        <section id="step-1" class="wizard-panel active">
+          <h4 class="fw-bold mb-3">1. المعلومات الأساسية</h4>
+          <div class="alert alert-info">يمكنك إدخال بيانات الحساب وبيانات العمل بشكل مستقل؛ لكل منهما مصدره الخاص.</div>
+          <div class="row g-3">
+            <div class="col-md-6">{{ user_form.first_name|as_crispy_field }}</div><div class="col-md-6">{{ user_form.last_name|as_crispy_field }}</div>
+            <div class="col-md-6">{{ user_form.email|as_crispy_field }}</div><div class="col-md-6">{{ user_form.phone|as_crispy_field }}</div>
+            <div class="col-12">{% if profile.profile_image %}<div class="mb-2"><img src="{{ profile.profile_image.url }}" alt="Profile" class="rounded border" style="max-width:150px;max-height:150px;object-fit:cover;"></div>{% endif %}{{ provider_form.profile_image|as_crispy_field }}</div>
+          </div>
+        </section>
+        <section id="step-2" class="wizard-panel">
+          <h4 class="fw-bold mb-3">2. معلومات النشاط والمهنة</h4>
+          <div class="row g-3"><div class="col-md-6">{{ provider_form.display_name|as_crispy_field }}</div><div class="col-md-6">{{ provider_form.specializations|as_crispy_field }}</div><div class="col-md-6">{{ provider_form.hourly_rate|as_crispy_field }}</div><div class="col-12">{{ provider_form.bio|as_crispy_field }}</div></div>
+        </section>
+        <section id="step-3" class="wizard-panel">
+          <h4 class="fw-bold mb-3">3. الخبرة والمؤهلات</h4>
+          <div class="row g-3"><div class="col-md-4">{{ provider_form.experience_years|as_crispy_field }}</div><div class="col-md-4">{{ provider_form.service_radius|as_crispy_field }}</div><div class="col-md-4">{{ provider_form.availability|as_crispy_field }}</div><div class="col-md-6">{{ provider_form.qualification_choices|as_crispy_field }}</div><div class="col-md-6">{{ provider_form.experience|as_crispy_field }}</div><div class="col-12">{{ provider_form.is_available|as_crispy_field }}</div></div>
+        </section>
+        <section id="step-4" class="wizard-panel">
+          <h4 class="fw-bold mb-3">4. الموقع والخريطة</h4>
+          <div class="row g-3"><div class="col-md-6">{{ provider_form.location_city|as_crispy_field }}</div><div class="col-md-6">{{ provider_form.location_district|as_crispy_field }}</div><div class="col-12">{{ provider_form.address|as_crispy_field }}</div></div>
+          {{ provider_form.latitude }}{{ provider_form.longitude }}
+          <div class="row g-3 mt-1"><div class="col-md-6"><label class="form-label fw-bold">Latitude</label><input id="latitude-display" type="text" class="form-control" value="{{ profile.latitude|default_if_none:'' }}" readonly></div><div class="col-md-6"><label class="form-label fw-bold">Longitude</label><input id="longitude-display" type="text" class="form-control" value="{{ profile.longitude|default_if_none:'' }}" readonly></div></div>
+          <div id="provider-location-map" class="provider-map mt-3" data-lat="{{ profile.latitude|default_if_none:'' }}" data-lng="{{ profile.longitude|default_if_none:'' }}"></div>
+          <small class="text-muted d-block mt-2"> حدد موقعك بالنقر على الخريطة أو اسحب علامة الموقع إلى المكان الصحيح. يمكنك أيضًا التبديل بين الخريطة وصور الأقمار الصناعية.</small>
+        </section>
+        <section id="step-5" class="wizard-panel">
+          <h4 class="fw-bold mb-3">5. سياسة العمولة والمحافظ</h4>
+          <div class="alert alert-info">{% if terms %}<strong>عمولة المنصة الحالية: {{ terms.commission_rate }}%</strong><br>تأتي هذه النسبة من سياسة العمولة النشطة في قاعدة البيانات.{% else %}<strong>لا توجد سياسة عمولة فعالة.</strong> يجب على الإدارة إعدادها قبل إرسال طلب التوثيق.{% endif %}</div>
+          {% if accepted_terms %}<p class="text-success"><i class="bi bi-check-circle"></i> وافقت على هذه السياسة بتاريخ {{ accepted_terms.accepted_at|date:'Y-m-d H:i' }}.</p>{% elif terms %}<button type="submit" name="wizard_action" value="accept_commission" class="btn btn-success mb-3"><i class="bi bi-check2-square ms-2"></i>أوافق على سياسة العمولة</button>{% endif %}
+          <h6 class="fw-bold">محافظ استقبال المدفوعات</h6>
+          {% for wallet, provider_wallet in wallet_rows %}<div class="border rounded p-3 mb-2" style="border-right:6px solid {{ wallet.color }} !important"><div class="form-check"><input class="form-check-input" type="checkbox" name="wallets" value="{{ wallet.pk }}" id="wallet_{{ wallet.pk }}" {% if provider_wallet and provider_wallet.is_active %}checked{% endif %}><label class="form-check-label fw-bold" for="wallet_{{ wallet.pk }}"><span style="color:{{ wallet.color }}">●</span> {{ wallet.name }}</label></div><label class="form-label mt-2" for="wallet_account_{{ wallet.pk }}">رقم الحساب</label><input class="form-control" id="wallet_account_{{ wallet.pk }}" name="wallet_account_{{ wallet.pk }}" value="{% if provider_wallet %}{{ provider_wallet.account_number }}{% endif %}" placeholder="777XXXXXX"></div>{% empty %}<p class="text-muted">لا توجد محافظ نشطة حاليًا.</p>{% endfor %}
+        </section>
+        <div class="wizard-actions"><button type="button" class="btn btn-outline-secondary" data-wizard-prev>السابق</button><button type="button" class="btn btn-outline-primary" data-wizard-next>التالي وحفظ</button></div>
+      </form>
+
+
+      <section id="step-6" class="wizard-panel">
+        <h4 class="fw-bold mb-3">6. مستندات التوثيق</h4>
+        <form method="post" enctype="multipart/form-data" class="card card-body bg-light border-0 mb-3">{% csrf_token %}<input type="hidden" name="wizard_action" value="upload_document"><input type="hidden" name="wizard_step" value="6"><div class="row g-3"><div class="col-md-5">{{ document_form.document_type|as_crispy_field }}</div><div class="col-md-5">{{ document_form.file|as_crispy_field }}</div><div class="col-md-2 d-flex align-items-end"><button class="btn btn-primary w-100"><i class="bi bi-upload ms-1"></i>رفع</button></div></div></form>
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>النوع</th><th>الملف</th><th>الحالة</th><th>تاريخ الرفع</th><th>إجراء</th></tr></thead><tbody>{% for doc in documents %}<tr><td>{{ doc.document_type }}</td><td><a href="{% url 'accounts:provider_document_download' doc.pk %}">{{ doc.file.name }}</a></td><td>{{ doc.get_status_display }}</td><td>{{ doc.created_at|date:'Y-m-d H:i' }}</td><td>{% if doc.status != 'approved' %}<form method="post" class="d-inline">{% csrf_token %}<input type="hidden" name="wizard_action" value="delete_document"><input type="hidden" name="wizard_step" value="6"><input type="hidden" name="document_id" value="{{ doc.pk }}"><button class="btn btn-sm btn-outline-danger">حذف/استبدال</button></form>{% else %}<span class="text-muted">معتمد</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="5" class="text-center text-muted py-4">لا توجد مستندات مرفوعة.</td></tr>{% endfor %}</tbody></table></div>
+      </section>
+
+      <div id="verification-submit-form">
+      <section id="step-7" class="wizard-panel"><h4 class="fw-bold mb-3">7. الخدمات المطلوبة للتوثيق</h4><p class="text-muted">اختر خدمة أو أكثر من القائمة المركزية إذا كانت جاهزة الآن. اختيار الخدمة ليس إلزاميًا لإرسال ملف التوثيق، ويمكنك إضافتها لاحقًا من إدارة خدمات مقدم الخدمة بعد تدشين الحساب.</p>{{ verification_form.requested_services|as_crispy_field }}</section>
+
+      <section id="step-8" class="wizard-panel">
+        <h4 class="fw-bold mb-3">8. مراجعة البيانات</h4><div class="alert alert-info"><strong>حالة الملف:</strong> يمكنك إرسال الملف حتى لو كانت بعض البيانات غير مكتملة. العناصر التالية غير المكتملة حاليًا هي للتنبيه فقط ويمكن استكمالها لاحقًا:{% if not can_submit_for_review %}<ul class="mb-0 mt-2">{% if not verification_checklist.profile %}<li>البيانات الأساسية والمهنية</li>{% endif %}{% if not verification_checklist.services %}<li>الخدمات المركزية</li>{% endif %}{% if not verification_checklist.experience %}<li>الخبرة والمؤهلات</li>{% endif %}{% if not verification_checklist.documents %}<li>المستندات المطلوبة</li>{% endif %}{% if not verification_checklist.location %}<li>الموقع المهني</li>{% endif %}{% if not verification_checklist.terms %}<li>الموافقة على الشروط والعمولة</li>{% endif %}{% if not verification_checklist.wallet %}<li>بيانات المحافظ</li>{% endif %}</ul>{% else %} جميع عناصر الملف الحالية مكتملة.{% endif %}</div>
+        <div class="review-grid"><div><strong>الاسم</strong><span>{{ user.get_full_name|default:user.username }}</span></div><div><strong>التواصل</strong><span>{{ user.email }} — {{ user.phone|default:'-' }}</span></div><div><strong>اسم العرض</strong><span>{{ profile.display_name|default:'-' }}</span></div><div><strong>التخصصات</strong><span>{% for item in profile.specializations.all %}{{ item.name }}{% if not forloop.last %}, {% endif %}{% empty %}لا توجد بيانات{% endfor %}</span></div><div><strong>المؤهلات</strong><span>{% for item in profile.qualification_choices.all %}{{ item.name }}{% if not forloop.last %}, {% endif %}{% empty %}لا توجد بيانات{% endfor %}</span></div><div><strong>الموقع</strong><span>{{ profile.city|default:'-' }} {{ profile.district|default:'' }} — {{ profile.latitude|default:'-' }}, {{ profile.longitude|default:'-' }}</span></div><div><strong>المستندات</strong><span>{{ documents|length }} مستند</span></div><div><strong>حالة العمولة</strong><span>{% if accepted_terms %}تمت الموافقة{% else %}لم تتم الموافقة{% endif %}</span></div><div><strong>بيانات الدفع</strong><span>{% if verification_checklist.wallet %}مكتملة{% else %}غير مكتملة{% endif %}</span></div></div>
+        <div class="mt-4"><button type="submit" form="provider-onboarding-form" name="wizard_action" value="submit_review" class="btn btn-success btn-lg"><i class="bi bi-send-check ms-2"></i>إرسال للمراجعة</button><p class="text-muted small mt-2">سيتم إرسال الملف الحالي إلى الإدارة للمراجعة، ويمكنك استكمال البيانات الناقصة لاحقًا.</p></div>
+      </section>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+
+.provider-map {
+    width: 100%;
+    height: 420px;
+    min-height: 420px;
+
+    position: relative;
+
+    border-radius: 16px;
+    border: 1px solid #dbe3ff;
+
+    overflow: hidden;
+
+    background: #e9ecef;
+
+    z-index: 1;
+}
+
+.provider-map .leaflet-container {
+    width: 100%;
+    height: 100%;
+
+    min-height: 420px;
+
+    background: #e9ecef;
+
+    font-family: inherit;
+}
+
+.provider-map .leaflet-control {
+    z-index: 1000;
+}
+
+.provider-map .leaflet-control-layers {
+    direction: rtl;
+    text-align: right;
+}
+
+.provider-map .leaflet-control-zoom {
+    direction: ltr;
+}
+
+.provider-map .leaflet-control-attribution {
+    direction: ltr;
+    font-size: 10px;
+}
+
+.wizard-shell {
+    overflow: hidden;
+}
+
+.wizard-steps {
+    display: grid;
+
+    grid-template-columns:
+        repeat(8, minmax(120px, 1fr));
+
+    gap: 6px;
+
+    padding: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #f8fafc
+        );
+
+    overflow-x: auto;
+
+    scrollbar-width: thin;
+}
+
+.wizard-step {
+    border: 0;
+
+    border-radius: 14px;
+
+    padding: 10px;
+
+    background: #fff;
+
+    color: #475569;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 6px 18px
+        rgba(15, 23, 42, .06);
+
+    min-width: 120px;
+
+    white-space: nowrap;
+}
+
+.wizard-step.active {
+    background: #4f46e5;
+    color: #fff;
+}
+
+.wizard-step span {
+    display: block;
+    font-size: .72rem;
+}
+
+.wizard-panel {
+    display: none;
+}
+
+.wizard-panel.active {
+    display: block;
+
+    animation:
+        fadeIn .18s ease;
+}
+
+.wizard-actions {
+    display: flex;
+
+    gap: 10px;
+
+    justify-content: flex-end;
+
+    margin-top: 24px;
+}
+
+.review-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(220px, 1fr)
+        );
+
+    gap: 12px;
+}
+
+.review-grid div {
+    padding: 14px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 14px;
+
+    background: #f8fafc;
+}
+
+.review-grid strong,
+.review-grid span {
+    display: block;
+}
+
+@keyframes fadeIn {
+
+    from {
+        opacity: 0;
+        transform:
+            translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (max-width: 992px) {
+
+    .wizard-steps {
+        grid-template-columns:
+            repeat(2, minmax(140px, 1fr));
+
+        overflow-x: visible;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .provider-map {
+        height: 360px;
+        min-height: 360px;
+    }
+
+    .provider-map .leaflet-container {
+        min-height: 360px;
+    }
+
+    .wizard-steps {
+        grid-template-columns:
+            repeat(2, minmax(130px, 1fr));
+
+        padding: 10px;
+    }
+
+    .wizard-step {
+        min-width: 0;
+    }
+}
+
+</style>
+{% endblock %}
+{% block extra_js %}
+<script>
+(function () {
+    'use strict';
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const panels = Array.from(
+            document.querySelectorAll('.wizard-panel')
+        );
+
+        const steps = Array.from(
+            document.querySelectorAll('.wizard-step')
+        );
+
+        const wizardStepInput = document.getElementById('wizard-step-input');
+        const onboardingForm = document.getElementById('provider-onboarding-form');
+
+        let current = Math.max(0, Math.min(steps.length - 1, (Number({{ current_step|default:1 }}) || 1) - 1));
+
+        const mapEl =
+            document.getElementById(
+                'provider-location-map'
+            );
+
+        const latInput =
+            document.getElementById(
+                'id_provider-latitude'
+            );
+
+        const lngInput =
+            document.getElementById(
+                'id_provider-longitude'
+            );
+
+        const latDisplay =
+            document.getElementById(
+                'latitude-display'
+            );
+
+        const lngDisplay =
+            document.getElementById(
+                'longitude-display'
+            );
+
+        let serviceMap = null;
+
+
+        /*
+         * ------------------------------------------
+         * تحديث الإحداثيات
+         * ------------------------------------------
+         */
+
+        function updateCoordinates(location) {
+
+            if (!location) {
+                return;
+            }
+
+            const lat =
+                Number(location.lat);
+
+            const lng =
+                Number(location.lng);
+
+            if (
+                !Number.isFinite(lat) ||
+                !Number.isFinite(lng)
+            ) {
+                return;
+            }
+
+            const latitude =
+                lat.toFixed(6);
+
+            const longitude =
+                lng.toFixed(6);
+
+            if (latInput) {
+                latInput.value = latitude;
+            }
+
+            if (lngInput) {
+                lngInput.value = longitude;
+            }
+
+            if (latDisplay) {
+                latDisplay.value = latitude;
+            }
+
+            if (lngDisplay) {
+                lngDisplay.value = longitude;
+            }
+        }
+
+
+        /*
+         * ------------------------------------------
+         * تهيئة الخريطة
+         * ------------------------------------------
+         */
+
+        function initializeMap() {
+
+            if (!mapEl) {
+                return;
+            }
+
+            if (!window.L) {
+                console.error(
+                    'Leaflet غير محمل.'
+                );
+                return;
+            }
+
+            if (
+                typeof window.ServiceMarketplaceOfflineMap !==
+                'function'
+            ) {
+                console.error(
+                    'ServiceMarketplaceOfflineMap غير موجود.'
+                );
+                return;
+            }
+
+            /*
+             * قراءة الموقع المحفوظ
+             */
+
+            const savedLat =
+                parseFloat(
+                    mapEl.dataset.lat ||
+                    (latInput ? latInput.value : '')
+                );
+
+            const savedLng =
+                parseFloat(
+                    mapEl.dataset.lng ||
+                    (lngInput ? lngInput.value : '')
+                );
+
+            const hasSavedLocation =
+                Number.isFinite(savedLat) &&
+                Number.isFinite(savedLng);
+
+            /*
+             * إذا لا يوجد موقع:
+             * صنعاء
+             */
+
+            const startLat =
+                hasSavedLocation
+                    ? savedLat
+                    : 15.3694;
+
+            const startLng =
+                hasSavedLocation
+                    ? savedLng
+                    : 44.1910;
+
+            if (hasSavedLocation) {
+                updateCoordinates({
+                    lat: startLat,
+                    lng: startLng
+                });
+            }
+
+            /*
+             * إنشاء الخريطة مرة واحدة
+             */
+
+            serviceMap =
+                window.ServiceMarketplaceOfflineMap(
+                    mapEl,
+                    {
+                        initial: {
+                            lat: startLat,
+                            lng: startLng
+                        },
+
+                        zoom: 13,
+
+                        readonly: false,
+
+                        onChange:
+                            updateCoordinates
+                    }
+                );
+
+
+            /*
+             * إجبار Leaflet على إعادة حساب
+             * أبعاد الحاوية
+             */
+
+            if (
+                serviceMap &&
+                typeof serviceMap.invalidateSize ===
+                'function'
+            ) {
+                setTimeout(
+                    function () {
+                        serviceMap.invalidateSize();
+                    },
+                    100
+                );
+
+                setTimeout(
+                    function () {
+                        serviceMap.invalidateSize();
+                    },
+                    500
+                );
+            }
+        }
+
+
+        /*
+         * ------------------------------------------
+         * عرض خطوة Wizard
+         * ------------------------------------------
+         */
+
+        function showStep(index) {
+
+            current =
+                Math.max(
+                    0,
+                    Math.min(
+                        index,
+                        steps.length - 1
+                    )
+                );
+
+            panels.forEach(function (panel) {
+                panel.classList.remove(
+                    'active'
+                );
+            });
+
+            steps.forEach(function (step) {
+                step.classList.remove(
+                    'active'
+                );
+            });
+
+            const target =
+                document.getElementById(
+                    steps[current].dataset.wizardTarget
+                );
+
+            if (target) {
+                target.classList.add(
+                    'active'
+                );
+            }
+
+            steps[current].classList.add(
+                'active'
+            );
+
+            if (wizardStepInput) {
+                wizardStepInput.value = String(current + 1);
+            }
+
+
+            /*
+             * إذا انتقلنا إلى خطوة الخريطة
+             */
+
+            if (
+                steps[current].dataset.wizardTarget ===
+                'step-4'
+            ) {
+
+                /*
+                 * تأخير بسيط حتى تصبح الخريطة
+                 * ظاهرة فعليًا.
+                 */
+
+                setTimeout(
+                    function () {
+
+                        if (!serviceMap) {
+                            initializeMap();
+                        }
+
+                        if (
+                            serviceMap &&
+                            typeof serviceMap.invalidateSize ===
+                            'function'
+                        ) {
+                            serviceMap.invalidateSize();
+                        }
+
+                    },
+                    50
+                );
+
+                setTimeout(
+                    function () {
+
+                        if (
+                            serviceMap &&
+                            typeof serviceMap.invalidateSize ===
+                            'function'
+                        ) {
+                            serviceMap.invalidateSize();
+                        }
+
+                    },
+                    300
+                );
+            }
+
+
+            /*
+             * تمرير الصفحة إلى بداية Wizard
+             */
+
+            const shell =
+                document.querySelector(
+                    '.wizard-shell'
+                );
+
+            if (shell) {
+
+                window.scrollTo({
+                    top:
+                        shell.offsetTop - 90,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+
+        /*
+         * ------------------------------------------
+         * أزرار الخطوات
+         * ------------------------------------------
+         */
+
+        function saveAndGoToStep(targetIndex) {
+            if (!onboardingForm) {
+                showStep(targetIndex);
+                return;
+            }
+            const targetStep = Math.max(1, Math.min(8, targetIndex + 1));
+            if (wizardStepInput) wizardStepInput.value = String(targetStep);
+            const action = onboardingForm.querySelector('input[name="wizard_action"]');
+            if (action) action.value = 'save_profile';
+            onboardingForm.submit();
+        }
+
+        steps.forEach(function (step, index) {
+            step.addEventListener('click', function () {
+                if (index === current) return;
+                if (index > current) {
+                    saveAndGoToStep(index);
+                } else {
+                    showStep(index);
+                }
+            });
+        });
+
+        document.querySelectorAll('[data-wizard-next]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                if (current < steps.length - 1) {
+                    saveAndGoToStep(current + 1);
+                }
+            });
+        });
+
+
+        document
+            .querySelectorAll(
+                '[data-wizard-prev]'
+            )
+            .forEach(
+                function (button) {
+
+                    button.addEventListener(
+                        'click',
+                        function () {
+                            showStep(
+                                current - 1
+                            );
+                        }
+                    );
+                }
+            );
+
+
+        /*
+         * ------------------------------------------
+         * الحفظ التلقائي للمحافظ
+         * ------------------------------------------
+         */
+
+        let walletSaveTimer = null;
+
+        function autosaveWallets() {
+            if (!onboardingForm) return;
+
+            const selected = Array.from(onboardingForm.querySelectorAll('input[name="wallets"]:checked'));
+            const incomplete = selected.some(function (checkbox) {
+                const account = onboardingForm.querySelector('#wallet_account_' + checkbox.value);
+                return !account || !account.value.trim();
+            });
+
+            if (incomplete) {
+                return;
+            }
+
+            if (wizardStepInput) wizardStepInput.value = String(current + 1);
+            clearTimeout(walletSaveTimer);
+            walletSaveTimer = setTimeout(function () {
+                const action = onboardingForm.querySelector('input[name="wizard_action"]');
+                if (action) action.value = 'save_profile';
+                onboardingForm.submit();
+            }, 250);
+        }
+
+        if (onboardingForm) {
+            onboardingForm.querySelectorAll('input[name="wallets"], input[name^="wallet_account_"]').forEach(function (field) {
+                field.addEventListener('change', autosaveWallets);
+                field.addEventListener('blur', autosaveWallets);
+            });
+        }
+
+
+        /*
+         * ------------------------------------------
+         * المدن والمديريات
+         * ------------------------------------------
+         */
+
+        document
+            .querySelectorAll(
+                'select[name$="location_city"]'
+            )
+            .forEach(
+                function (city) {
+
+                    const district =
+                        document.getElementById(
+                            city.id.replace(
+                                /location_city$/,
+                                'location_district'
+                            )
+                        );
+
+                    if (!district) {
+                        return;
+                    }
+
+                    city.addEventListener(
+                        'change',
+                        async function () {
+
+                            district.innerHTML =
+                                '<option value="">اختر المديرية</option>';
+
+                            if (!city.value) {
+                                return;
+                            }
+
+                            try {
+
+                                const response =
+                                    await fetch(
+                                        '{% url "accounts:districts_for_city" %}?city=' +
+                                        encodeURIComponent(
+                                            city.value
+                                        )
+                                    );
+
+                                if (!response.ok) {
+                                    throw new Error(
+                                        'فشل تحميل المديريات'
+                                    );
+                                }
+
+                                const data =
+                                    await response.json();
+
+                                data.districts.forEach(
+                                    function (item) {
+
+                                        district.add(
+                                            new Option(
+                                                item.name,
+                                                item.id
+                                            )
+                                        );
+                                    }
+                                );
+
+                            } catch (error) {
+
+                                console.error(
+                                    error
+                                );
+                            }
+                        }
+                    );
+                }
+            );
+
+
+        /*
+         * ------------------------------------------
+         * تهيئة الخريطة عند فتح خطوة 4
+         * ------------------------------------------
+         */
+
+        /*
+         * لا نهيئها وهي مخفية.
+         * ننتظر انتقال المستخدم إلى خطوة الموقع.
+         */
+
+        // ابدأ من الخطوة التي حددها الخادم بعد آخر حفظ/رفع، وليس دائمًا من الخطوة الأولى.
+        showStep(current);
+
+    });
+
+})();
+</script>
+{% endblock %}

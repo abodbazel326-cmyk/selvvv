@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}تعديل الملف الشخصي - منصة سوق الخدمات{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+    <div>
+      <h2 class="fw-bold mb-1"><i class="bi bi-person-gear ms-2"></i>تعديل الملف الشخصي</h2>
+      <p class="text-muted mb-0">حدّث بيانات حسابك وملفك المهني. موقع العمل والتخصصات والمؤهلات مصدرها الملف المهني فقط.</p>
+    </div>
+    {% if profile %}
+      <span class="badge fs-6 {% if profile.verification_status == 'verified' %}bg-success{% elif profile.verification_status == 'pending_review' %}bg-warning text-dark{% elif profile.verification_status == 'suspended' %}bg-danger{% else %}bg-secondary{% endif %}">
+        {{ profile.get_verification_status_display }}
+      </span>
+    {% endif %}
+  </div>
+
+  {% if profile and profile.verification_status != 'verified' %}
+    <div class="alert alert-info d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div><strong>التوثيق والتدشين منفصلان عن تعديل الملف الشخصي.</strong><br>يمكنك استكمال البيانات ورفع المستندات وإرسال الطلب من صفحة التوثيق.</div>
+      <a class="btn btn-primary flex-shrink-0" href="{% url 'accounts:provider_onboarding' %}"><i class="bi bi-ui-checks-grid ms-1"></i>فتح صفحة التوثيق</a>
+    </div>
+  {% endif %}
+
+  {% if user_form.errors or provider_form.errors %}
+    <div class="alert alert-danger"><strong>لم يتم حفظ بعض البيانات.</strong> راجع أخطاء الحقول أدناه.</div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" action="{% url 'accounts:provider_profile_edit' %}" class="loading-form">
+    {% csrf_token %}
+    {{ provider_form.city }}{{ provider_form.district }}
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-primary text-white"><h5 class="mb-0">بيانات الحساب</h5></div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">{{ user_form.first_name|as_crispy_field }}</div>
+              <div class="col-md-6">{{ user_form.last_name|as_crispy_field }}</div>
+              <div class="col-12">{{ user_form.email|as_crispy_field }}</div>
+              <div class="col-12">{{ user_form.phone|as_crispy_field }}</div>
+                          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-primary text-white"><h5 class="mb-0">الهوية المهنية</h5></div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">{{ provider_form.display_name|as_crispy_field }}</div>
+              <div class="col-12">{{ provider_form.bio|as_crispy_field }}</div>
+              <div class="col-md-6">{{ provider_form.phone|as_crispy_field }}</div>
+              <div class="col-md-6">{{ provider_form.email|as_crispy_field }}</div>
+              <div class="col-12">{{ provider_form.profile_image|as_crispy_field }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-primary text-white"><h5 class="mb-0">الخدمات والخبرة</h5></div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12">{{ provider_form.specializations|as_crispy_field }}</div>
+              <div class="col-md-6">{{ provider_form.experience_years|as_crispy_field }}</div>
+              <div class="col-md-6">{{ provider_form.hourly_rate|as_crispy_field }}</div>
+              <div class="col-12">{{ provider_form.qualification_choices|as_crispy_field }}</div>
+              <div class="col-12">{{ provider_form.experience|as_crispy_field }}</div>
+              <div class="col-md-6">{{ provider_form.service_radius|as_crispy_field }}</div>
+              <div class="col-md-6">{{ provider_form.availability|as_crispy_field }}</div>
+              <div class="col-12">{{ provider_form.is_available|as_crispy_field }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-primary text-white"><h5 class="mb-0">العنوان والموقع</h5></div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">{{ provider_form.location_city|as_crispy_field }}</div>
+              <div class="col-md-6">{{ provider_form.location_district|as_crispy_field }}</div>
+              <div class="col-12">{{ provider_form.address|as_crispy_field }}</div>
+            </div>
+            {{ provider_form.latitude }}{{ provider_form.longitude }}
+            <div class="row g-3 mt-1">
+              <div class="col-md-6"><label class="form-label fw-bold">خط العرض</label><input id="latitude-display" type="text" class="form-control" value="{{ profile.latitude|default_if_none:'' }}" readonly></div>
+              <div class="col-md-6"><label class="form-label fw-bold">خط الطول</label><input id="longitude-display" type="text" class="form-control" value="{{ profile.longitude|default_if_none:'' }}" readonly></div>
+            </div>
+            <div id="provider-location-map" class="provider-map mt-3" data-lat="{{ profile.latitude|default_if_none:'' }}" data-lng="{{ profile.longitude|default_if_none:'' }}"></div>
+            <small class="text-muted d-block mt-2">انقر على الخريطة أو اسحب العلامة لتعديل موقعك.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mt-4">
+      <div class="card-header bg-primary text-white"><h5 class="mb-0">الخدمات المعتمدة</h5></div>
+      <div class="card-body">
+        <p class="text-muted">هذه الخدمات معتمدة من الإدارة ويمكنك إنشاء عروض تجارية منها من صفحة خدماتي.</p>
+        <div class="row g-2">
+          {% for provider_service in approved_provider_services %}
+            <div class="col-md-6"><div class="border rounded p-3 h-100"><strong>{{ provider_service.catalog_service.name }}</strong>{% if provider_service.catalog_service.category %}<small class="d-block text-muted">{{ provider_service.catalog_service.category.name }}</small>{% endif %}<span class="badge text-bg-success mt-2">{{ provider_service.get_approval_status_display }}</span></div></div>
+          {% empty %}
+            <div class="col-12"><p class="text-muted mb-0">لا توجد خدمات مركزية معتمدة بعد.</p></div>
+          {% endfor %}
+        </div>
+        {% if profile.verification_status == 'verified' %}<a class="btn btn-outline-primary mt-3" href="{% url 'marketplace:my_services' %}">فتح خدماتي</a>{% endif %}
+      </div>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-4">
+      <p class="text-muted mb-0"><i class="bi bi-info-circle ms-1"></i>هذه الصفحة تحفظ بيانات الملف فقط ولا تنشئ أو ترسل طلب توثيق.</p>
+      <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save ms-2"></i>حفظ تغييرات الملف</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.provider-map { width: 100%; height: 300px; min-height: 300px; border-radius: 14px; border: 1px solid #dbe3ff; overflow: hidden; background: #e9ecef; }
+.provider-map .leaflet-container { width: 100%; height: 100%; min-height: 300px; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const city = document.getElementById('id_provider-location_city');
+  const district = document.getElementById('id_provider-location_district');
+  if (city && district) {
+    city.addEventListener('change', async function () {
+      district.innerHTML = '<option value="">اختر المديرية</option>';
+      if (!city.value) return;
+      try {
+        const response = await fetch('{% url "accounts:districts_for_city" %}?city=' + encodeURIComponent(city.value));
+        if (!response.ok) throw new Error('فشل تحميل المديريات');
+        const data = await response.json();
+        data.districts.forEach(function (item) { district.add(new Option(item.name, item.id)); });
+      } catch (error) { console.error(error); }
+    });
+  }
+
+  const mapElement = document.getElementById('provider-location-map');
+  const latitude = document.getElementById('id_provider-latitude');
+  const longitude = document.getElementById('id_provider-longitude');
+  const latitudeDisplay = document.getElementById('latitude-display');
+  const longitudeDisplay = document.getElementById('longitude-display');
+  if (!mapElement || !latitude || !longitude || typeof L === 'undefined') return;
+
+  const initialLat = parseFloat(mapElement.dataset.lat) || 15.3694;
+  const initialLng = parseFloat(mapElement.dataset.lng) || 44.1910;
+  const map = L.map(mapElement).setView([initialLat, initialLng], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+  let marker = L.marker([initialLat, initialLng], { draggable: true }).addTo(map);
+  function setCoordinates(lat, lng) {
+    latitude.value = Number(lat).toFixed(6);
+    longitude.value = Number(lng).toFixed(6);
+    latitudeDisplay.value = latitude.value;
+    longitudeDisplay.value = longitude.value;
+  }
+  if (!latitude.value || !longitude.value) setCoordinates(initialLat, initialLng);
+  map.on('click', function (event) { marker.setLatLng(event.latlng); setCoordinates(event.latlng.lat, event.latlng.lng); });
+  marker.on('dragend', function (event) { const point = event.target.getLatLng(); setCoordinates(point.lat, point.lng); });
+});
+</script>
+{% endblock %}
