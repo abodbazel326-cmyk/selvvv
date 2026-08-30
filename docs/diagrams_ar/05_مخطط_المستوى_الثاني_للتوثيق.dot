@@ -1,0 +1,10 @@
+digraph G { graph [fontname="Noto Sans Arabic", label="الشكل (5) — المستوى الثاني: توثيق مقدم الخدمة", labelloc="t", fontsize=24, rankdir=LR, splines=ortho, nodesep=.7, ranksep=1.0, bgcolor="white"]; node [fontname="Noto Sans Arabic"]; edge [fontname="Noto Sans Arabic", color="#64748b", arrowsize=.8]; p [label="مقدم الخدمة", shape=box, style=filled, fillcolor="#dcfce7"]; a [label="المدير", shape=box, style=filled, fillcolor="#fce7f3"]; p1 [label="2.1
+تحديث الملف واختيار الخدمات", shape=circle, style=filled, fillcolor="#dbeafe"]; p2 [label="2.2
+رفع المستندات", shape=circle, style=filled, fillcolor="#dbeafe"]; p3 [label="2.3
+إرسال طلب التوثيق
+وحفظ لقطة البيانات", shape=circle, style=filled, fillcolor="#dbeafe"]; p4 [label="2.4
+مراجعة الطلب والمستندات", shape=circle, style=filled, fillcolor="#dbeafe"]; dec [label="القرار", shape=diamond, style=filled, fillcolor="#fef3c7"]; ok [label="2.5
+اعتماد وتفعيل مقدم الخدمة", shape=circle, style=filled, fillcolor="#dcfce7"]; no [label="2.6
+رفض أو طلب مستندات إضافية", shape=circle, style=filled, fillcolor="#fee2e2"]; d1 [label="ملف مقدم الخدمة
+والخدمات المختارة", shape=cylinder, style=filled, fillcolor="#dcfce7"]; d2 [label="المستندات", shape=cylinder, style=filled, fillcolor="#fef3c7"]; d3 [label="طلب التوثيق
+ولقطة البيانات", shape=cylinder, style=filled, fillcolor="#dbeafe"]; n [label="إشعار + سجل تدقيقي", shape=cylinder, style=filled, fillcolor="#cffafe"]; p -> p1 [label="بيانات الملف"]; p -> p2 [label="ملفات الإثبات"]; p1 -> d1; p2 -> d2; p1 -> p3; p2 -> p3; p3 -> d3; a -> p4 [label="قرار المراجعة"]; d2 -> p4; d3 -> p4; p4 -> dec; dec -> ok [label="مقبول"]; dec -> no [label="مرفوض / يحتاج مستندات"]; ok -> d1; no -> d3; ok -> n; no -> n; n -> p [label="نتيجة التوثيق"]; }
