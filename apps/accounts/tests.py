@@ -32,3 +32,35 @@ class DomainArchitectureTests(TestCase):
         other=User.objects.create_user(username='other',email='other@example.com',password='pass')
         invalid=Review(order=order,customer=other,provider=self.provider,service=self.service,service_rating=4,provider_rating=4,comment='Invalid ownership')
         with self.assertRaises(ValidationError): invalid.full_clean()
+
+class OnboardingCommissionAndServicesTests(TestCase):
+    def setUp(self):
+        from apps.core.models import TermsAndConditions
+        from apps.payments.models import Wallet
+        self.provider = User.objects.create_user(username='onboarding-provider', email='onboarding@example.com', password='pass', role='provider')
+        self.terms = TermsAndConditions.objects.create(version='2026.1', content='terms', commission_rate=10, is_active=True)
+        self.wallet = Wallet.objects.create(name='Cash', code='cash', is_active=True)
+        self.category = Category.objects.create(name='Design')
+        self.managed = ManagedService.objects.create(name='Logo design', category=self.category)
+        self.client.force_login(self.provider)
+
+    def test_commission_acceptance_and_wallet_save_do_not_require_profile_completion(self):
+        response = self.client.post('/accounts/provider/onboarding/', {
+            'wizard_action': 'accept_commission', 'wizard_step': '5',
+            'wallets': [self.wallet.pk], f'wallet_account_{self.wallet.pk}': '771234567',
+        })
+        self.assertEqual(response.status_code, 302)
+        from apps.core.models import TermsAcceptance
+        from apps.payments.models import ProviderWallet
+        self.assertTrue(TermsAcceptance.objects.filter(user=self.provider, terms=self.terms).exists())
+        self.assertTrue(ProviderWallet.objects.filter(provider=self.provider.provider_profile, wallet=self.wallet, is_active=True).exists())
+
+    def test_requested_services_are_saved_as_draft_and_count_for_submission_checklist(self):
+        response = self.client.post('/accounts/provider/onboarding/', {
+            'wizard_action': 'save_profile', 'wizard_step': '7', 'requested_services': [self.managed.pk],
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.client.session['provider_onboarding_requested_services'], [self.managed.pk])
+        from apps.accounts.utils import get_provider_onboarding_status
+        checklist, _ = get_provider_onboarding_status(self.provider.provider_profile, [self.managed.pk])
+        self.assertTrue(checklist['services'])

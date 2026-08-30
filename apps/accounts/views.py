@@ -192,6 +192,7 @@ def provider_onboarding_view(request):
         return redirect('accounts:profile')
 
     profile = services.get_provider_profile(request.user)
+    requested_services_key = 'provider_onboarding_requested_services'
     if profile.verification_status == 'verified':
         messages.info(request, 'تم اعتماد حسابك. يمكنك تعديل ملفك الشخصي من الصفحة المخصصة لذلك.')
         return redirect('accounts:provider_profile_edit')
@@ -219,20 +220,23 @@ def provider_onboarding_view(request):
             current_step = 1
         request.session['provider_onboarding_step'] = current_step
         if action == 'accept_commission':
-            # Save the provider/profile fields first so accepting the policy never
-            # causes previously entered onboarding data to disappear.
-            saved, user_form, provider_form, save_error = _save_provider_forms(request, profile, include_wallets=False)
             terms = active_terms()
             if not terms:
                 messages.error(request, 'لا توجد سياسة عمولة فعالة. يرجى انتظار الإدارة لإعدادها.')
-            elif not saved:
-                messages.error(request, 'تعذر حفظ البيانات الحالية قبل قبول سياسة العمولة. راجع الأخطاء الظاهرة في النموذج.')
             else:
-                ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[0] or None
-                acceptance, created = TermsAcceptance.objects.get_or_create(
-                    user=request.user, terms=terms,
-                    defaults={'commission_rate': terms.commission_rate, 'ip_address': ip}
-                )
+                # Consent is its own state transition.  It must not depend on
+                # validation of unrelated, incomplete profile steps.
+                try:
+                    with transaction.atomic():
+                        _sync_provider_wallets(request, profile)
+                        ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[0] or None
+                        acceptance, created = TermsAcceptance.objects.get_or_create(
+                            user=request.user, terms=terms,
+                            defaults={'commission_rate': terms.commission_rate, 'ip_address': ip}
+                        )
+                except ValidationError as exc:
+                    messages.error(request, exc.messages[0] if hasattr(exc, 'messages') else str(exc))
+                    return redirect(f'{request.path}?step=5')
                 if created:
                     from apps.core.services import notify
                     notify(request.user, 'commission_accepted', 'تم قبول سياسة العمولة', f'تم قبول عمولة المنصة بنسبة {terms.commission_rate}%.')
@@ -281,6 +285,12 @@ def provider_onboarding_view(request):
         else:
             saved, user_form, provider_form, save_error = _save_provider_forms(request, profile, include_wallets=True)
             if saved:
+                draft_form = ProviderVerificationRequestForm(request.POST, provider=profile)
+                if draft_form.is_valid() and 'requested_services' in request.POST:
+                    request.session[requested_services_key] = list(
+                        draft_form.cleaned_data['requested_services'].values_list('pk', flat=True)
+                    )
+                    request.session.modified = True
                 profile.refresh_from_db()
                 messages.success(request, 'تم حفظ التغييرات ومتابعة الخطوة الحالية.')
                 request.session['provider_onboarding_step'] = current_step
@@ -298,7 +308,8 @@ def provider_onboarding_view(request):
 
 
 def _provider_onboarding_context(request, profile, user_form, provider_form, document_form, verification_form=None):
-    checklist, can_submit = get_provider_onboarding_status(profile)
+    requested_service_ids = request.session.get('provider_onboarding_requested_services', [])
+    checklist, can_submit = get_provider_onboarding_status(profile, requested_service_ids)
     terms = active_terms()
     accepted_terms = TermsAcceptance.objects.filter(user=request.user, terms=terms).first() if terms else None
     active_wallets = Wallet.objects.filter(is_active=True).order_by('display_order', 'name')
@@ -317,7 +328,7 @@ def _provider_onboarding_context(request, profile, user_form, provider_form, doc
         'maps_api_key': settings.MAPS_API_KEY,
         'verification_form': verification_form or ProviderVerificationRequestForm(
             provider=profile,
-            initial={'requested_services': _initial_requested_services(profile)},
+            initial={'requested_services': requested_service_ids or _initial_requested_services(profile)},
         ),
         'document_form': document_form,
         'documents': ProviderDocument.objects.filter(provider=profile).select_related('document_type').order_by('-created_at'),
@@ -478,7 +489,10 @@ def _validate_and_submit_verification(request, profile):
     if not verification_form.is_valid():
         return False, 'تعذر إرسال الطلب. راجع اختيار الخدمات إن وُجدت.', verification_form
 
-    checklist, _complete = get_provider_onboarding_status(profile)
+    requested_services = verification_form.cleaned_data.get('requested_services')
+    checklist, _complete = get_provider_onboarding_status(
+        profile, list(requested_services.values_list('pk', flat=True))
+    )
     missing = {
         'profile': 'البيانات الأساسية والمهنية',
         'services': 'الخدمات المركزية',
@@ -493,8 +507,9 @@ def _validate_and_submit_verification(request, profile):
     if labels:
         return False, 'لا يمكن إرسال الطلب قبل استكمال: ' + '، '.join(labels) + '.', verification_form
     _create_or_update_verification_request(
-        request, profile, verification_form.cleaned_data.get('requested_services') or []
+        request, profile, requested_services
     )
+    request.session.pop('provider_onboarding_requested_services', None)
     return True, 'تم إرسال ملفك للمراجعة، وأصبح الطلب ظاهرًا لدى الإدارة.', verification_form
 
 
